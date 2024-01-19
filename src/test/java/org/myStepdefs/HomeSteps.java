@@ -64,7 +64,6 @@ public class HomeSteps {
         soft.assertEquals(home.getActiveTimePercent(),five.getFiveTilesDataMap().get("activePercent"));
         soft.assertEquals(home.getIdleTimePercent(),five.getFiveTilesDataMap().get("idlePercent"));
         soft.assertAll();
-        soft.assertAll();
         logger.info("successfully validated five tiles data !");
     }
 

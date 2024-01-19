@@ -6,7 +6,9 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MM_TimeTrackerScreen extends BaseTest {
     public MM_TimeTrackerScreen() {
@@ -15,8 +17,7 @@ public class MM_TimeTrackerScreen extends BaseTest {
 
     @FindBy(xpath = "//span[@class='card-label fw-bolder fs-3 mb-1']")
     private WebElement time_tracker_title;
-    @FindBy(xpath = "//table[@class='table align-middle gs-0 gy-4']")
-    private WebElement table;
+
     @FindBy(xpath = "//tr")
     private List<WebElement> rows;
     @FindBy(xpath = "//td")
@@ -168,6 +169,45 @@ public class MM_TimeTrackerScreen extends BaseTest {
         }
         clickOnName();
     }
+    public void getTableElement()
+    {
+        WebElement table = driver.findElement(By.xpath("//table[@class='table align-middle gs-0 gy-4']"));
+        List<WebElement> rows = table.findElements(By.tagName("tr"));
+        for (int i=1;i<rows.size();i++)
+        {
+         WebElement row=rows.get(i);
+            List<WebElement> columns = row.findElements(By.tagName("td"));
+            for (int j=1;j<columns.size();j++)
+            {
+                WebElement colum = columns.get(j);
+                System.out.print(colum.getText()+"\t");
+            }
+        }
+        System.out.println();
+    }
+
+        public  Map<String, List<String>> getTableData() {
+            WebElement table = driver.findElement(By.xpath("//table[@class='table align-middle gs-0 gy-4']"));
+            Map<String, List<String>> allRowsData = new HashMap<>();
+            List<WebElement> headerCells = table.findElements(By.tagName("th"));
+            List<String> headerNames = extractCellText(headerCells);
+
+            for (int i = 1; i < headerNames.size(); i++) {
+                List<WebElement> columnCells = table.findElements(By.xpath(".//td[" + (i + 1) + "]"));
+                List<String> columnData = extractCellText(columnCells);
+                allRowsData.put(headerNames.get(i), columnData);
+            }
+
+            return allRowsData;
+        }
+
+        private static List<String> extractCellText(List<WebElement> cells) {
+            List<String> cellData = new java.util.ArrayList<>();
+            for (WebElement cell : cells) {
+                cellData.add(cell.getText());
+            }
+            return cellData;
+        }
 
 
 }

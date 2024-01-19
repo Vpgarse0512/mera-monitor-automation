@@ -37,9 +37,10 @@ Feature: Web User Test Cases
     And User click on the report tab.
     And User click on time tracker option.
     Then Verify user can see the components in the time tracker screen.
-    Then Verify user can see the data in time for a particular day.
+    And User can see the todays date on tracker screen.
     Then Verify user can see the data in time for a particular day.
     Then Verify user is able to see the data for a date range.
+    Then Verify range of data should be verify with api's.
     Then Verify user's Active time, Idle Time and Total Time Data on time tracker page should be correct.
     Examples: | email | password |
     | email | password |
@@ -51,8 +52,14 @@ Feature: Web User Test Cases
     Then User click on submit button.
     And User click on the report tab.
     And User click on the system activity tab.
+    And User get the date from system activity screen.
     Then Verify the user can see component in the system activity screen.
-    Then Verify the user can increase the limit of activity entry up to 10 .
+    Then Verify user should able to see current date all used url & App when loading the page first time.
+    Then Verify that first activity of the user should have start time as day start time.
+    Then Verify that Time spent on any activity should be the difference between next Activity start time and that particular Activity start time.
+    Then Verify user can able to change the date to see activities of that day.
+    Then Verify user able to change the next and previous button successfully
+    Then Verify user should be able to select Row per pages 5.
     Then Verify the activity data entry with api's response.
     Examples: | email | password |
     | email | password |

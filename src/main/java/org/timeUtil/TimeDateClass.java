@@ -16,10 +16,27 @@ public class TimeDateClass {
      * @return string time format in HH:MM:SS
      */
     public static String convertSecondsToHHMMSSFormat(double seconds) {
+        String time;
         int hours = (int) (seconds / 3600);
         int min = (int) ((seconds % 3600) / 60);
         int remainingSeconds = (int) (seconds % 60);
-        return String.format("%02d:%02d:%02d", hours, min, remainingSeconds);
+        time = String.format("%02d:%02d:%02d", hours, min, remainingSeconds).trim();
+        try {
+            if (time.equals("00:00:00") || time.equals("0"))
+                time="-";
+        }catch (Exception e)
+        {
+
+        }
+        return time;
+    }
+
+    public static String convertSecondsToHHMMSS(double seconds) {
+        String time;
+        int hours = (int) (seconds / 3600);
+        int min = (int) ((seconds % 3600) / 60);
+        int remainingSeconds = (int) (seconds % 60);
+        return String.format("%02d:%02d:%02d", hours, min, remainingSeconds).trim();
     }
     /**
      * method is to convert seconds into hours minutes and seconds in givenformat
@@ -148,6 +165,20 @@ public class TimeDateClass {
             return null;
         }
     }
+    public static String convertTimeFormat(String inputTime, String inputFormat, String outputFormat) {
+        SimpleDateFormat inputTimeFormat = new SimpleDateFormat(inputFormat);
+        SimpleDateFormat outputTimeFormat = new SimpleDateFormat(outputFormat);
+
+        try {
+            Date time = inputTimeFormat.parse(inputTime);
+            return outputTimeFormat.format(time);
+        } catch (ParseException e) {
+            // Handle parsing exception, if any
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
     public static void main(String[] args) {
         System.out.println(convertSecondsToHHMMSSFormat(3797));//3908 - 3797  01:05:08  01:03:17
@@ -161,7 +192,7 @@ public class TimeDateClass {
         System.out.println(newDate);
         System.out.println(convertDateFormat("1/3/2024 4:07:00 PM","M/d/yyyy h:mm:ss a","hh:mm:ss a"));
         System.out.println(getCustomDate(3,"january"));
-        System.out.println();
+        System.out.println(convertTimeFormat("03:18:34 PM","h:mm:ss a", "hh:mm:ss a"));
         /*00:05:18
         2023-12-13
         2023-12-12
