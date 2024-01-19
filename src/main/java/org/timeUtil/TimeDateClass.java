@@ -3,7 +3,9 @@ package org.timeUtil;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -178,6 +180,20 @@ public class TimeDateClass {
             return null;
         }
     }
+    public static String addTime(String time1, String time2) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        time2=convertSecondsToHHMMSS(Double.parseDouble(time2));
+        LocalTime localTime1 = LocalTime.parse(time1, formatter);
+        LocalTime localTime2 = LocalTime.parse(time2, formatter);
+
+        LocalTime sumTime = localTime1.plusHours(localTime2.getHour())
+                .plusMinutes(localTime2.getMinute())
+                .plusSeconds(localTime2.getSecond());
+
+        return sumTime.format(formatter);
+    }
+
 
 
     public static void main(String[] args) {
@@ -193,6 +209,12 @@ public class TimeDateClass {
         System.out.println(convertDateFormat("1/3/2024 4:07:00 PM","M/d/yyyy h:mm:ss a","hh:mm:ss a"));
         System.out.println(getCustomDate(3,"january"));
         System.out.println(convertTimeFormat("03:18:34 PM","h:mm:ss a", "hh:mm:ss a"));
+        String time1 = "10:55:07";
+        String time2 = "00:00:55";
+
+        String sumTime = addTime(time1, time2);
+        System.out.println("Sum of times: " + sumTime);
+
         /*00:05:18
         2023-12-13
         2023-12-12

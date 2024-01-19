@@ -2,6 +2,7 @@ package org.myStepdefs;
 
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
+import org.helpers.endPoints.NewTimeTrackerEndPoint;
 import org.helpers.endPoints.SystemActivityEndPoints;
 import org.junit.Assert;
 import org.openqa.selenium.support.ui.Select;
@@ -18,6 +19,8 @@ import java.util.Map;
 public class SystemActivitySteps {
     private static Logger logger = Logger.getLogger(SystemActivitySteps.class.getName().getClass());
     String day;
+    String firstActivity;
+    int pastDay;
 
     @And("User click on the system activity tab.")
     public void userClickOnTheSystemActivityTab() {
@@ -41,12 +44,8 @@ public class SystemActivitySteps {
     public void verifyTheUserCanIncreaseTheLimitOfActivityEntryUpTo(int i) {
         int no = i;
         MM_SystemActivityScreen system = new MM_SystemActivityScreen();
-        Select dropdown = new Select(system.getDropdownElement());
-        dropdown.selectByVisibleText(String.valueOf(no));
-    }
-
-    @Then("Verify the activity data entry with api's response.")
-    public void verifyTheActivityDataEntryWithApiSResponse() {
+        String[] num={"10","25","50","75","100","All"};
+        system.selectPageInitiationOnSystemActivityScreen(num);
     }
 
 
@@ -61,21 +60,20 @@ public class SystemActivitySteps {
             int size = 10;
             LinkedHashMap<String, List<String>> systemActivityData = system.systemActivityRangeOfData(Integer.parseInt(day), size, str);
             LinkedHashMap<String, List<String>> allData = activity.getTableData();
-            System.out.println(systemActivityData);
-            System.out.println(allData);
+            /*System.out.println(systemActivityData);
+            System.out.println(allData);*/
             for (int i = 0; i < size; i++) {
                 soft.assertEquals(allData.get("Apps / URL's").get(i), systemActivityData.get("processName").get(i));
                 soft.assertEquals(allData.get("Title").get(i), systemActivityData.get("titleName").get(i));
-                soft.assertEquals(allData.get("Start Time").get(i), TimeDateClass.convertDateFormat(systemActivityData.get("startTime").get(i),"M/dd/yyyy hh:mm:ss a","hh:mm:ss"));
+                soft.assertEquals(allData.get("Start Time").get(i), TimeDateClass.convertDateFormat(systemActivityData.get("startTime").get(i), "M/dd/yyyy hh:mm:ss a", "hh:mm:ss"));
                 soft.assertTrue(allData.get("Time Spent").get(i).contains(TimeDateClass.convertSecondsToHHMMSS(Double.parseDouble(systemActivityData.get("processTotalTimeSeconds").get(i)))));
             }
             soft.assertAll();
         /*expected [] but found [msedgewebview2.exe],
                 expected [1/18/2024 11:07:48 AM] but found [11:07:48],
         expected [10] but found [00:00:10]*/
-        }catch (Exception ex)
-        {
-            System.out.println(ex +" "+ "Todays data not found either user on leave or still not started work");
+        } catch (Exception ex) {
+            System.out.println(ex + " " + "Todays data not found either user on leave or still not started work");
         }
 
     }
@@ -89,6 +87,87 @@ public class SystemActivitySteps {
 
     @Then("Verify that first activity of the user should have start time as day start time.")
     public void verifyThatFirstActivityOfTheUserShouldHaveStartTimeAsDayStartTime() {
+        SoftAssert soft = new SoftAssert();
+        NewTimeTrackerEndPoint firstActivity = new NewTimeTrackerEndPoint();
+        MM_SystemActivityScreen systemActivity = new MM_SystemActivityScreen();
+        soft.assertEquals(systemActivity.getFirstSystemActivityTime(), firstActivity.getTimeTrackerMapData(Integer.parseInt(day)).get("firstActivity").toString().split(" ")[0]);
+        soft.assertAll();
 
+    }
+
+    @Then("Verify that Time spent on any activity should be the difference between next Activity start time and that particular Activity start time.")
+    public void verifyThatTimeSpentOnAnyActivityShouldBeTheDifferenceBetweenNextActivityStartTimeAndThatParticularActivityStartTime() {
+        try {
+            SystemActivityEndPoints system = new SystemActivityEndPoints();
+            MM_SystemActivityScreen steps = new MM_SystemActivityScreen();
+            SoftAssert soft = new SoftAssert();
+            int size = 10;
+            String firstActivityTime = steps.getFirstSystemActivityTime();
+            String[] str = {"processName", "titleName", "processTotalTimeSeconds", "startTime", "endTime", "url"};
+            LinkedHashMap<String, List<String>> processTime = system.systemActivityRangeOfData(Integer.parseInt(day), size, str);
+            LinkedHashMap<String, List<String>> startTime = steps.getTableData();
+            for (int i = 0; i <= size - 1; i++) {
+                String seconds = processTime.get("processTotalTimeSeconds").get(i);
+                String startActivityTime = startTime.get("Start Time").get(i + 1);
+                System.out.println(seconds + "  " + startActivityTime);
+                String addition = TimeDateClass.addTime(firstActivityTime, seconds);
+                soft.assertEquals(startActivityTime, addition);
+                System.out.println(startActivityTime + "  " + addition);
+                firstActivityTime = addition;
+                System.out.println(firstActivityTime);
+            }
+            soft.assertAll();
+        }catch (Exception ex)
+        {
+            System.out.println(ex);
+        }
+    }
+
+    @Then("Verify user can able to change the date to see activities of that day.")
+    public void verifyUserCanAbleToChangeTheDateToSeeActivitiesOfThatDay() {
+        pastDay = Integer.parseInt(day) - 1;
+        MM_SystemActivityScreen pastDate = new MM_SystemActivityScreen();
+        pastDate.selectOldDate(pastDay, "January");
+
+    }
+
+    @Then("Verify activities of the past day with api's.")
+    public void verifyActivitiesOfThePastDayWithApiS() {
+
+        try {
+            SoftAssert soft = new SoftAssert();
+            String[] str = {"processName", "titleName", "processTotalTimeSeconds", "startTime", "endTime", "url"};
+            MM_SystemActivityScreen activity = new MM_SystemActivityScreen();
+            activity.scrollToElement(activity.getDropdownElement());
+            SystemActivityEndPoints system = new SystemActivityEndPoints();
+            // int size = Integer.parseInt(activity.getRangeCount());
+            int size = 10;
+            LinkedHashMap<String, List<String>> systemActivityData = system.systemActivityRangeOfData(pastDay, size, str);
+            LinkedHashMap<String, List<String>> allData = activity.getTableData();
+            //System.out.println(systemActivityData);
+            //System.out.println(allData);
+            for (int i = 0; i < size; i++) {
+                soft.assertEquals(allData.get("Apps / URL's").get(i), systemActivityData.get("processName").get(i));
+                soft.assertEquals(allData.get("Title").get(i), systemActivityData.get("titleName").get(i));
+                soft.assertEquals(allData.get("Start Time").get(i), TimeDateClass.convertDateFormat(systemActivityData.get("startTime").get(i), "M/dd/yyyy hh:mm:ss a", "hh:mm:ss"));
+                soft.assertTrue(allData.get("Time Spent").get(i).contains(TimeDateClass.convertSecondsToHHMMSS(Double.parseDouble(systemActivityData.get("processTotalTimeSeconds").get(i)))));
+            }
+            soft.assertAll();
+        /*expected [] but found [msedgewebview2.exe],
+                expected [1/18/2024 11:07:48 AM] but found [11:07:48],
+        expected [10] but found [00:00:10]*/
+        } catch (Exception ex) {
+            System.out.println(ex + " " + "Todays data not found either user on leave or still not started work");
+        }
+    }
+
+    @Then("Verify user able to change the next and previous button successfully")
+    public void verifyUserAbleToChangeTheNextAndPreviousButtonSuccessfully() {
+        MM_SystemActivityScreen system = new MM_SystemActivityScreen();
+        system.sleepTime(1);
+        system.clickOnNextButton();
+        system.sleepTime(1);
+        system.scrollToElement(system.previousButton);
+        system.clickOnPreviousButton();
     }
 }

@@ -6,6 +6,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.Select;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -27,8 +28,8 @@ public class MM_SystemActivityScreen extends BaseTest {
     private WebElement time_spend_title;
     @FindBy(xpath = "//span[@class='select-custom-header']")
     private WebElement rows_per_pageText;
-    @FindBy(xpath = "//a[@class='previousBttn ']")
-    private WebElement previousButton;
+    @FindBy(xpath = "//a[contains(@class,'previousBttn')]")
+    public WebElement previousButton;
     @FindBy(xpath = "//a[@class='nextBttn']")
     private WebElement nextButton;
     @FindBy(xpath = "//input[@class='form-control ss_date']")
@@ -38,9 +39,16 @@ public class MM_SystemActivityScreen extends BaseTest {
     @Getter
     @FindBy(xpath = "//select[@class='form-control form-control-lg form-control-soli custom-select-class']")
     private WebElement dropdownSelection;
+
+    @FindBy(xpath = "//*[@id=\"kt_content_container\"]/div/div/div/div[2]/div/div[1]/table/tbody/tr[1]/td[4]/span")
+    private WebElement systemFirstActivity;
     public WebElement getDropdownElement()
     {
         return dropdownSelection;
+    }
+    public void clickOnDropdown()
+    {
+        click(dropdownSelection);
     }
 
     public String getSystemActivityTitle() {
@@ -70,9 +78,27 @@ public class MM_SystemActivityScreen extends BaseTest {
     {
         return getAttribute(datePicker,"value");
     }
+    private void clickOnDatePicker() {
+    click(datePicker);
+    }
+    private void clickSystemActivityTitle() {
+        click(system_activity_title);
+    }
+public void clickOnNextButton()
+{
+    click(nextButton);
+}
+    public void clickOnPreviousButton()
+    {
+        click(previousButton);
+    }
     public String getRangeCount()
     {
         return getText(rangeCount);
+    }
+    public String getFirstSystemActivityTime()
+    {
+        return getText(systemFirstActivity);
     }
     public LinkedHashMap<String, List<String>> getTableData() {
         WebElement table = driver.findElement(By.xpath("//table[@class='table align-middle gs-0 gy-4']"));
@@ -96,4 +122,38 @@ public class MM_SystemActivityScreen extends BaseTest {
         }
         return cellData;
     }
+
+    public void selectPageInitiationOnSystemActivityScreen(String [] str)
+    {
+        jsScrollByElement(dropdownSelection);
+
+        for (String option:str) {
+            sleepTime(1);
+            jsScrollByElement(dropdownSelection);
+            clickOnDropdown();
+            Select dropdown = new Select(getDropdownElement());
+            dropdown.selectByVisibleText(option);
+            sleepTime(1);
+            log.info(" Selected the number :"+option +" from dropdown.");
+        }
+    }
+    public void selectOldDate(int day, String month) {
+        System.out.println(day +" "+month);
+        clickOnDatePicker();
+        for (int i = 0; i <= 12; i++) {
+            WebElement months = driver.findElement(By.xpath("//div[@class='react-datepicker__current-month']"));
+            if (months.getText().contains(month)) {
+                driver.findElement(By.xpath("//div[text()='"+day+"']")).click();
+                break;
+            } else {
+                driver.findElement(By.xpath("//button[@class='react-datepicker__navigation react-datepicker__navigation--previous']")).click();
+            }
+
+        }
+        clickSystemActivityTitle();
+    }
+
+
+
+
 }

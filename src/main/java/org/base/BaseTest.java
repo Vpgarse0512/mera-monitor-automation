@@ -20,7 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BaseTest {
-    public static final Logger log = LogManager.getLogger(BaseTest.class);
+    public static final Logger log = LogManager.getLogger(BaseTest.class.getName());
     public WebDriver driver;
     public static final int WAIT = 45;
     Properties configProp = new Properties();

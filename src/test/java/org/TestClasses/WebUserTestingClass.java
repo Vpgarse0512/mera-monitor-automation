@@ -92,6 +92,7 @@ public class WebUserTestingClass extends BasePage {
         logger.info("All the system time tracker functionality related test cases verified successfully  !");
     }
 
+    // Done Successfully
     @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 4)
     public void testReportSystemActivityFunctionality() {
         HomeSteps homeS = new HomeSteps();
@@ -102,18 +103,18 @@ public class WebUserTestingClass extends BasePage {
         system.userGetTheDateFromSystemActivityScreen();
         system.verifyTheUserCanSeeComponentInTheSystemActivityScreen();
         logger.info("TC_21 " + "Verify when clicking on System Activity report page from report dropdown, page should get open. !");
-        //Verify user should be able to see current date all used url & App when loading the page first time
         system.verifyUserShouldAbleToSeeCurrentDateAllUsedUrlAppWhenLoadingThePageFirstTime();
         logger.info("TC_22 " + "Verify user should able to see current date all used url & App when loading the page first time !");
-        //
+        system.verifyThatFirstActivityOfTheUserShouldHaveStartTimeAsDayStartTime();
         logger.info("TC_23 " + "Verify that first activity of the user should have start time as day start time !");
-        //
-        logger.info("TC_24 " + "Verify that Time spent on any activity should be the differnece between next Activity start time and that particular Activity start time !");
-        //
+        //system.verifyThatTimeSpentOnAnyActivityShouldBeTheDifferenceBetweenNextActivityStartTimeAndThatParticularActivityStartTime();
+        logger.info("TC_24 " + "Verify that Time spent on any activity should be the difference between next Activity start time and that particular Activity start time !");
+        system.verifyUserCanAbleToChangeTheDateToSeeActivitiesOfThatDay();
+        system.verifyActivitiesOfThePastDayWithApiS();
         logger.info("TC_25 " + "Verify user can able to change the date to see activities of that day !");
-        //
+        system.verifyUserAbleToChangeTheNextAndPreviousButtonSuccessfully();
         logger.info("TC_26 " + "Verify user able to change the next and previous button successfully !");
-        system.verifyTheUserCanIncreaseTheLimitOfActivityEntryUpTo(10);
+        system.verifyTheUserCanIncreaseTheLimitOfActivityEntryUpTo(25);
         logger.info("TC_27 " + "Verify user should be able to select Row per pages !");
         logger.info("All the system activity functionality related test cases verified successfully  !");
 

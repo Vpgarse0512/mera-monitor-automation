@@ -42,7 +42,7 @@ public class BasePage extends BaseTest {
         String accessToken = PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "accessToken");
         String url = PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "url");
         String browser = PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "browser");
-        System.out.println(day+" "+month);
+        System.out.println("Day added in global property file : "+day+" and Month :"+month);
         System.setProperty("day",day);
         System.setProperty("month",month);
         System.setProperty("token",accessToken);
@@ -111,7 +111,7 @@ public class BasePage extends BaseTest {
      * @return the webdriver for the current thread
      */
     public static WebDriver getWebDriver() {
-        System.out.println("WebDriver: " + webDriver.get());
+        //System.out.println("WebDriver: " + webDriver.get());
         return webDriver.get();
     }
 }

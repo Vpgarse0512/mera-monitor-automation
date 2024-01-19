@@ -58,9 +58,9 @@ Feature: Web User Test Cases
     Then Verify that first activity of the user should have start time as day start time.
     Then Verify that Time spent on any activity should be the difference between next Activity start time and that particular Activity start time.
     Then Verify user can able to change the date to see activities of that day.
+    Then Verify activities of the past day with api's.
     Then Verify user able to change the next and previous button successfully
-    Then Verify user should be able to select Row per pages 5.
-    Then Verify the activity data entry with api's response.
+    Then Verify user should be able to select Row per pages 25.
     Examples: | email | password |
     | email | password |
 
