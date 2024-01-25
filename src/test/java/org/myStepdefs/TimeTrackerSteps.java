@@ -96,6 +96,7 @@ public class TimeTrackerSteps {
         MM_TimeTrackerScreen time=new MM_TimeTrackerScreen();
         int toDay = Integer.parseInt(System.getProperty("day"));
         int size=tracker.getTimeTrackerRangData(toDay, Integer.parseInt(date)).getList("").size();
+        System.out.println(size);
         String [] keys= {"userName","date","totalTime","totalActiveTime","totalIdleTime","awayTime","firstActivity","lastActivity","department","timeZone"};
         /*Map<String, List<String>> allRowsData = new HashMap<>();
 

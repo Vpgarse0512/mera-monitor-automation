@@ -84,16 +84,16 @@ public class HolidayEndpoints extends RestUtils {
     public LinkedHashMap<String, List<String>> getHolidayData() {
         JsonPath holiday = getHolidayList();
         int size = getHolidayList().getList("").size();
-        System.out.println(size);
+        //System.out.println(size);
         LinkedHashMap<String, List<String>> map = new LinkedHashMap<>();
-        String[] list={"holidayName","holidayDate"};
-        for (String key:list) {
+        String[] list = {"holidayName", "holidayDate"};
+        for (String key : list) {
             List<String> cellData = new java.util.ArrayList<>();
             for (int i = 0; i < size - 1; i++) {
 
-                cellData.add(holiday.get("[" + i + "]."+key+""));
+                cellData.add(holiday.get("[" + i + "]." + key + ""));
             }
-            map.put(key,cellData);
+            map.put(key, cellData);
 
         }
         return map;

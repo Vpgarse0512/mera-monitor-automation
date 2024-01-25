@@ -252,24 +252,26 @@ public class WebUserTestingClass extends BasePage {
         logger.info(" All the time claim related test cases verified successfully !");
     }
 
-    //Done
+    //Done but assertion failed due to time stamp
+   // expected [07:32] but found [19:32], expected [07:50] but found [19:50]
     @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 11)
     public void testTimeClaimStatusFunctionality() {
         TimeClaimSteps claim = new TimeClaimSteps();
         claim.userClickOnTimeClaimTab();
         claim.userClickOnStatusOptionSubTab();
         claim.verifyAllTheComponentsOnTheTimeClaimStatusScreen();
+        logger.info("TC_58 " + "verify user should able to navigate to time claim status page. !");
         // pending to verify for current date
         int day = Integer.parseInt(System.getProperty("day"));
         String month = System.getProperty("month");
         claim.userSelectTheParticularDayAndMonthUsingCalenderOnClaimStatus(day, month);
         claim.verifyTheTimeClaimsStatusRecordAndStatusWithApiS();
-        logger.info("TC_58 " + "verify user should able to navigate to time claim status page. !");
         logger.info("TC_59 " + "Verify all the time claim status should be visible. !");
         logger.info("TC_60 " + "Verify user should able to change the date !");
         logger.info("All the time claim status related test cases verified successfully !");
     }
 
+    // Done Successfully !
     @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 12)
     public void testHolidayFunctionality() {
         HolidaySteps holiday = new HolidaySteps();

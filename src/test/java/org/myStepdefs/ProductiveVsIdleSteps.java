@@ -47,7 +47,7 @@ public class ProductiveVsIdleSteps {
         soft.assertEquals(productive.getProductiveVsIdleTitle(), "Productive vs Idle");
         soft.assertEquals(productive.getDateTitle(), "Date");
         soft.assertEquals(productive.getProductiveTimeTitle(), "Productive Time");
-        soft.assertEquals(productive.getProductivityTitle(), "Productive Time");
+        soft.assertEquals(productive.getProductivityTitle(), "Productivity");
         soft.assertEquals(productive.getUnproductiveTimeTitle(), "Unproductive Time");
         soft.assertEquals(productive.getIdleTimeTitle(), "Idle Time");
         soft.assertEquals(productive.getAwayTimeTitle(), "Away Time");

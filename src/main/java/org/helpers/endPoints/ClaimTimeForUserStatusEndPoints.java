@@ -105,6 +105,7 @@ public class ClaimTimeForUserStatusEndPoints extends RestUtils{
     public static void main(String[] args) {
         ClaimTimeForUserStatusEndPoints claim=new ClaimTimeForUserStatusEndPoints();
         //System.out.println(StringUtil.extractTime(claim.getClaimData(3).get("toTime")));
-        System.out.println(claim.getTimeTrackerDetails(3,"january").getString(""));
+        //System.out.println(claim.getTimeTrackerDetails(3,"january").getString(""));
+        System.out.println(claim.getClaimData(16,"January"));
     }
 }

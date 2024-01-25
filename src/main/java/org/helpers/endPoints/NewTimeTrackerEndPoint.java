@@ -187,12 +187,12 @@ public class NewTimeTrackerEndPoint extends RestUtils {
 
     public static void main(String[] args) {
         NewTimeTrackerEndPoint tracker = new NewTimeTrackerEndPoint();
-        System.out.println(tracker.getTimeTrackerDetails(17).getString(""));
-        System.out.println(tracker.getTimeTrackerMapData(17));
-        System.out.println(tracker.getTimeTrackerRangData(16, 18).getList("").size());
-        System.out.println(tracker.getTimeTrackerRangData(16, 18).getString(""));
+        //System.out.println(tracker.getTimeTrackerDetails(17).getString(""));
+        //System.out.println(tracker.getTimeTrackerMapData(17));
+        //System.out.println(tracker.getTimeTrackerRangData(16, 18).getList("").size());
+       // System.out.println(tracker.getTimeTrackerRangData(16, 18).getString(""));
         String [] keys= {"userName","date","totalTime","totalActiveTime","totalIdleTime","awayTime","firstActivity","lastActivity","department","timeZone"};
 
-        System.out.println(tracker.range(3,keys,16,"17"));;
+        System.out.println(tracker.range(3,keys,16,"25"));;
     }
 }

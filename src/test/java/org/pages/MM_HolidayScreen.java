@@ -24,7 +24,19 @@ public class MM_HolidayScreen extends BaseTest {
     private WebElement day_title;
     @FindBy(xpath = "//th[@class='min-w-150px text-start']")
     private WebElement date_title;
+    @FindBy(xpath = "//a[@class='nextBttn']")
+    public WebElement next_Button;
 
+    @FindBy(xpath = "//h2[@class='noRecordFound']")
+    public WebElement noHolidayFound;
+    public String getNoHolidayFound()
+    {
+        return getText(noHolidayFound);
+    }
+    public void clickOnNextButton()
+    {
+        click(next_Button);
+    }
     public void clickOnHolidayTab()
     {
         click(holidayTab);

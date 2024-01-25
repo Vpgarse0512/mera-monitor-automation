@@ -6,6 +6,7 @@ import org.helpers.endPoints.HolidayEndpoints;
 import org.pages.MM_HolidayScreen;
 import org.testng.asserts.SoftAssert;
 import org.testng.log4testng.Logger;
+import org.timeUtil.TimeDateClass;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -42,12 +43,30 @@ public class HolidaySteps {
         //System.out.println(holiday.getTableData().get("Name").get(2));
         SoftAssert soft = new SoftAssert();
         String[] list = {"Name", "Date"};
-        for (String key : list) {
+        // for (String key : list) {
+        try {
             for (int i = 0; i < size - 1; i++) {
-                soft.assertEquals(uiData.get(key).get(i), linkList.get("holidayName").get(i));
-                System.out.println(uiData.get(key).get(i) + " " + linkList.get("holidayName").get(i));
+                if (i == 9) {
+                    holiday.clickOnNextButton();
+                    //System.out.println("clicked on next button !");
+                    Thread.sleep(1000);
+                }
+                soft.assertEquals(uiData.get("Name").get(i), linkList.get("holidayName").get(i));
+                soft.assertEquals(uiData.get("Date").get(i), TimeDateClass.convertDateFormat(linkList.get("holidayDate").get(i)));
+                //System.out.println(uiData.get("Date").get(i) + "   " + TimeDateClass.convertDateFormat(linkList.get("holidayDate").get(i)));
+                if (i == size / 2) {
+                    holiday.scrollToElement(holiday.next_Button);
+                    //System.out.println("Scrolled down till end !");
+                    Thread.sleep(1000);
+                }
+
             }
+        } catch (Exception ex) {
+            soft.assertEquals(holiday.getNoHolidayFound(), "No Holidays Found");
+            System.out.println("No Holidays Found");
+
         }
+        //}
         soft.assertAll();
     }
 }

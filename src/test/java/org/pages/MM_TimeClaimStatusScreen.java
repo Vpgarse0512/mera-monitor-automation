@@ -28,7 +28,7 @@ public class MM_TimeClaimStatusScreen extends BaseTest {
     private WebElement reasonTitle;
     @FindBy(xpath = "//th[normalize-space()='Approved / Rejected By']")
     private WebElement approveTitle;
-    @FindBy(xpath = "//th[contains(@class,'text-center')]")
+    @FindBy(xpath = "(//th[contains(@class,'text-center')])[3]")
     private WebElement statusTitle;
 
 
@@ -36,13 +36,13 @@ public class MM_TimeClaimStatusScreen extends BaseTest {
     private WebElement userName;
     @FindBy(xpath = "(//span[@class='text-dark  d-block fs-6 '])[2]")
     private WebElement date;
-    @FindBy(xpath = "//span[@class='text-dark  d-block fs-6']")
+    @FindBy(xpath = "//span[@class='text-dark  d-block fs-6 text-center']")
     private WebElement startTime;
-    @FindBy(xpath = "(//span[@class='text-dark d-block fs-6'])[1]")
+    @FindBy(xpath = "(//span[@class='text-dark d-block fs-6 text-center'])[1]")
     private WebElement endTime;
-    @FindBy(xpath = "(//span[@class='text-dark d-block fs-6'])[2]")
+    @FindBy(xpath = "(//span[@class='text-dark d-block fs-6'])[1]")
     private WebElement reason;
-    @FindBy(xpath = "(//span[@class='text-dark d-block fs-6'])[3]")
+    @FindBy(xpath = "(//span[@class='text-dark d-block fs-6'])[2]")
     private WebElement approvedBy;
     @FindBy(xpath = "//span[@class=' badge fw-bold me-auto px-4 py-3 badge-light-success ']")
     private WebElement status;
