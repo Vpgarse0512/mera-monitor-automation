@@ -64,8 +64,6 @@ public class RestUtils {
                 .queryParams (queryParams);
         return reqSpec;
     }
-
-
     public static String getJsonPath(Response response, String key) {
         String value = null;
         try {

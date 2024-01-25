@@ -3,16 +3,20 @@ package org.myStepdefs;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import org.base.BasePage;
+import org.helpers.endPoints.NewTimeTrackerEndPoint;
 import org.helpers.endPoints.ProductivityVsIdleEndPoints;
 import org.pages.MM_ProductivityIdleScreen;
 import org.pages.MM_TimeClaimStatusScreen;
 import org.testng.asserts.SoftAssert;
 import org.testng.log4testng.Logger;
+import org.timeUtil.TimeDateClass;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class ProductiveVsIdleSteps {
     private static Logger logger = Logger.getLogger(ProductiveVsIdleSteps.class.getName().getClass());
+    int cDate;
 
     @And("User click on the productivity vs idle tab.")
     public void userClickOnTheProductivityVsIdleTab() {
@@ -24,29 +28,49 @@ public class ProductiveVsIdleSteps {
     @Then("Verify the user can see component in the productivity vs idle screen.")
     public void verifyTheUserCanSeeComponentInTheProductivityVsIdleScreen() {
         MM_ProductivityIdleScreen productive = new MM_ProductivityIdleScreen();
+        cDate = Integer.parseInt(productive.getDate().split("/")[0]);
+        String month = System.getProperty("month");
+        try {
+            if (productive.isNoRecordFoundDisplay()) {
+                for (int i = 0; i < 5; i++) {
+                    if (productive.isNoRecordFoundDisplay()) {
+                        productive.selectOldDate(cDate, month);
+                        break;
+                    }
+                    cDate = cDate - 1;
+                }
+            }
+        } catch (Exception ex) {
+            System.out.println("Record showing on the productive vs idle screen !");
+        }
         SoftAssert soft = new SoftAssert();
-        soft.assertEquals(productive.getProductiveVsIdleTitle(), "Productivity vs Idle");
+        soft.assertEquals(productive.getProductiveVsIdleTitle(), "Productive vs Idle");
         soft.assertEquals(productive.getDateTitle(), "Date");
+        soft.assertEquals(productive.getProductiveTimeTitle(), "Productive Time");
         soft.assertEquals(productive.getProductivityTitle(), "Productive Time");
         soft.assertEquals(productive.getUnproductiveTimeTitle(), "Unproductive Time");
         soft.assertEquals(productive.getIdleTimeTitle(), "Idle Time");
         soft.assertEquals(productive.getAwayTimeTitle(), "Away Time");
         soft.assertEquals(productive.getTotalTimeTitle(), "Total Time");
-        soft.assertEquals(productive.getProductiveTimeTitle(), "Productivity");
         soft.assertEquals(productive.isDatePickerTitle(), true);
+        soft.assertAll();
         logger.info("productivity vs idle components verified successfully !");
     }
 
     @Then("Verify the user productivity vs idle data mapping with api's.")
     public void verifyTheUserProductivityVsIdleDataMappingWithApiS() {
         SoftAssert soft = new SoftAssert();
+        String day = TimeDateClass.getToDate().split("-")[0];
+        String month = System.getProperty("month");
+        HashMap<String, Object> api = new ProductivityVsIdleEndPoints().getProductivityVsIdleDetailsMap(Integer.parseInt(day), month);
         MM_ProductivityIdleScreen productive = new MM_ProductivityIdleScreen();
-        /*soft.assertEquals(productive.getDate(), );
-        soft.assertEquals(productive.getProductiveTime(), );
-        soft.assertEquals(productive.getUnProductiveTime(), );
-        soft.assertEquals(productive.getIdleTime(), );
-        soft.assertEquals(productive.getAwayTime(), );
-        soft.assertEquals(productive.getTotalTime(), );*/
+        //soft.assertEquals(productive.getDate(),api.get(""));
+        soft.assertEquals(productive.getProductiveTime(), api.get("productiveTime"));
+        soft.assertEquals(productive.getUnProductiveTime(), api.get("unproductiveTime"));
+        soft.assertEquals(productive.getIdleTime(), api.get("idleTime"));
+        soft.assertEquals(productive.getAwayTime(), api.get("awayTime"));
+        soft.assertEquals(productive.getTotalTime(), api.get("totalTime"));
+        soft.assertAll();
     }
 
 
@@ -54,13 +78,14 @@ public class ProductiveVsIdleSteps {
     public void verifyTheUserCanCheckTheProductivityVsIdleReportForPastDate() {
         MM_ProductivityIdleScreen productive = new MM_ProductivityIdleScreen();
         SoftAssert soft = new SoftAssert();
-        HashMap<String, Object> productivity = new ProductivityVsIdleEndPoints().getProductivityVsIdleDetailsMap(3,"January");
+        HashMap<String, Object> productivity = new ProductivityVsIdleEndPoints().getProductivityVsIdleDetailsMap(3, "January");
         soft.assertEquals(productive.getDate(), productivity.get("date"));
         soft.assertEquals(productive.getProductiveTime(), productivity.get("productiveTime"));
         soft.assertEquals(productive.getUnProductiveTime(), productivity.get("unproductiveTime"));
         soft.assertEquals(productive.getIdleTime(), productivity.get("idleTime"));
         soft.assertEquals(productive.getAwayTime(), productivity.get("awayTime"));
         soft.assertEquals(productive.getTotalTime(), productivity.get("totalTime"));
+        soft.assertAll();
     }
 
     @And("User click on the productive green graph.")
@@ -77,6 +102,7 @@ public class ProductiveVsIdleSteps {
         soft.assertEquals(productive.getUnproductivePopupTitle(), "Unproductive");
         soft.assertEquals(productive.getIdlePopupTitle(), "Idle");
         soft.assertEquals(productive.getKeyboardMouseStockTitle(), "Keyboard & Mouse Stroke");
+        soft.assertAll();
     }
 
     @Then("Verify the productive column entries.")
@@ -104,6 +130,7 @@ public class ProductiveVsIdleSteps {
         soft.assertEquals(productive.getProductivePopupTitle(), "Productive");
         soft.assertEquals(productive.getIdlePopupTitle(), "Idle");
         soft.assertEquals(productive.getKeyboardMouseStockTitle(), "Keyboard & Mouse Stroke");
+        soft.assertAll();
     }
 
     @Then("Verify the unproductive column entries.")
@@ -121,5 +148,16 @@ public class ProductiveVsIdleSteps {
         MM_ProductivityIdleScreen claim = new MM_ProductivityIdleScreen();
         claim.selectOldDate(day, month);
         logger.info("date updated successfully !");
+    }
+
+    @Then("Verify Idle away and total Time on this page is same as Idle Time on Time tracker Page !")
+    public void verifyIdleAwayAndTotalTimeOnThisPageIsSameAsIdleTimeOnTimeTrackerPage() {
+        LinkedHashMap<String, Object> api = new NewTimeTrackerEndPoint().getTimeTrackerMapData(cDate);
+        MM_ProductivityIdleScreen productive=new MM_ProductivityIdleScreen();
+        SoftAssert soft = new SoftAssert();
+        soft.assertEquals(productive.getTotalTime(), api.get("totalTime"));
+        soft.assertEquals(productive.getIdleTime(), api.get("idleTime"));
+        soft.assertEquals(productive.getAwayTime(), api.get("awayTime"));
+        soft.assertAll();
     }
 }

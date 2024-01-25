@@ -15,19 +15,20 @@ import org.timeUtil.TimeDateClass;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 
-public class UserTimeToClaimEndPoint extends RestUtils {
-    private static final Logger LOGGER = LogManager.getLogger(UserTimeToClaimEndPoint.class);
-    public static final String TO_CLAIM_ENDPOINT = "GetUserTimeToClaim";
+public class HolidayEndpoints extends RestUtils {
+    private static final Logger LOGGER = LogManager.getLogger(HolidayEndpoints.class);
+    public static final String HOLIDAY_ENDPOINT = "GetYearlyHolidaysByOrgId";
 
     /**
      * Build request specification for Get User Time To Claim.
      *
      * @param payloadObj,cred
      */
-    public void buildRequestSpecForGetUserTimeToClaimAPI(LinkedHashMap<String,Object> payloadObj, Object token) {
-        HashMap<String,Object> accessToken=new HashMap();
-        accessToken.put("Authorization",token); // accessToken
+    public void buildRequestSpecForGetHolidayListPI(LinkedHashMap<String, Object> payloadObj, Object token) {
+        HashMap<String, Object> accessToken = new HashMap();
+        accessToken.put("Authorization", token); // accessToken
         LOGGER.info("Building request specification for ClaimTimeForUser API.");
         reqSpec = RestUtils.requestSpecification(payloadObj, accessToken);
     }
@@ -35,9 +36,9 @@ public class UserTimeToClaimEndPoint extends RestUtils {
     /**
      * Execute the Get User Time To Claim API with GET method and initialize the response object.
      */
-    public void hitGetUserTimeToClaimAPI() {
+    public void hitGetHolidayListAPI() {
         String endPoint;
-        Routes routes = Routes.valueOf(TO_CLAIM_ENDPOINT);
+        Routes routes = Routes.valueOf(HOLIDAY_ENDPOINT);
         endPoint = routes.getResource();
         LOGGER.info("Hit the GetUserTimeToClaim API with given request specification: " + reqSpec + "\n" +
                 "and the endpoint is : " + endPoint + "\n" + "and with given http verb : " +
@@ -59,44 +60,48 @@ public class UserTimeToClaimEndPoint extends RestUtils {
         return jsonPath.getString("message").trim();
     }
 
-    public JsonPath getUserTimeToClaimDetails(int day)  {
+    public JsonPath getHolidayList() {
         LOGGER.info("Build request specification for Get User Time To Claim API.");
-        String accessToken = "Bearer "+ PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "accessToken");
-        LoginEndPoints login=new LoginEndPoints();
+        String accessToken = "Bearer " + PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "accessToken");
+        LoginEndPoints login = new LoginEndPoints();
         LinkedHashMap<String, Object> data = null;
         try {
             data = login.getTheDetailsFromLoginAPI();
-            LinkedHashMap<String,Object> object = new LinkedHashMap<>();
-            object.put("UserId",data.get("userId"));
-            object.put("OrganizationId",data.get("organizationId"));
-            object.put("FromDate", TimeDateClass.getCustomDateAndTime(day,"00:00:00"));
-            buildRequestSpecForGetUserTimeToClaimAPI(object, accessToken);
-            hitGetUserTimeToClaimAPI();
+            LinkedHashMap<String, Object> object = new LinkedHashMap<>();
+            object.put("organizationId", data.get("organizationId"));
+            object.put("currentDate", TimeDateClass.getTodaysDate());
+            buildRequestSpecForGetHolidayListPI(object, accessToken);
+            hitGetHolidayListAPI();
             Assert.assertEquals(getAPIResponseCode(), 200);
             //Assert.assertEquals(getLoginAPIResponseMessage(), "Login Successful");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (ParseException e) {
+        } catch (IOException | ParseException e) {
             throw new RuntimeException(e);
         }
 
         return jsonPath;
     }
-    public HashMap<String, Object> getTimeClaimMap(int day)
-    {
-        JsonPath claim = getUserTimeToClaimDetails(day);
-        HashMap<String,Object> map=new HashMap<>();
-        map.put("date",TimeDateClass.getCustomDDMMYYYY(day).replaceAll("-","/"));
-        map.put("firstActivity",claim.getString("firstActivity"));
-        map.put("lastActivity",claim.getString("lastActivity"));
-        map.put("totalTime",claim.getString("totalTime"));
-        map.put("productiveTime",claim.getString("totalProductiveTime"));
-        map.put("idleTime",claim.getString("totalIdleTime"));
+
+    public LinkedHashMap<String, List<String>> getHolidayData() {
+        JsonPath holiday = getHolidayList();
+        int size = getHolidayList().getList("").size();
+        System.out.println(size);
+        LinkedHashMap<String, List<String>> map = new LinkedHashMap<>();
+        String[] list={"holidayName","holidayDate"};
+        for (String key:list) {
+            List<String> cellData = new java.util.ArrayList<>();
+            for (int i = 0; i < size - 1; i++) {
+
+                cellData.add(holiday.get("[" + i + "]."+key+""));
+            }
+            map.put(key,cellData);
+
+        }
         return map;
     }
 
     public static void main(String[] args) {
-        UserTimeToClaimEndPoint claim=new UserTimeToClaimEndPoint();
-        System.out.println(claim.getTimeClaimMap(16));
+        HolidayEndpoints holiday = new HolidayEndpoints();
+        //System.out.println(holiday.getHolidayList().getString(""));
+        System.out.println(holiday.getHolidayData());
     }
 }

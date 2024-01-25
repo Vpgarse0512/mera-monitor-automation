@@ -5,6 +5,7 @@ import io.cucumber.java.en.Then;
 import io.restassured.path.json.JsonPath;
 import org.helpers.endPoints.ClaimTimeForUserStatusEndPoints;
 import org.helpers.endPoints.UserTimeToClaimEndPoint;
+import org.pages.MM_HolidayScreen;
 import org.pages.MM_TimeClaimScreen;
 import org.pages.MM_TimeClaimStatusScreen;
 import org.testng.asserts.SoftAssert;
@@ -132,19 +133,7 @@ public class TimeClaimSteps {
         logger.info("all the claim status record verified successfully !");
     }
 
-    @And("User click on time holiday tab.")
-    public void userClickOnTimeHolidayTab() {
 
-    }
-
-    @Then("Verify all UI components on the holiday screen.")
-    public void verifyAllUIComponentsOnTheHolidayScreen() {
-
-    }
-
-    @Then("Verify the holiday data with holidays api's.")
-    public void verifyTheHolidayDataWithHolidaysApiS() {
-    }
 
     @And("User select the particular day and month using calender on claim status.")
     public void userSelectTheParticularDayAndMonthUsingCalenderOnClaimStatus(int day,String month) {

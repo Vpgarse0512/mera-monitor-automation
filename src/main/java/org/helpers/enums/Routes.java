@@ -20,7 +20,8 @@ public enum Routes {
     GetClaimTimeForUser("/v1/TimeClaim/GetClaimTimeForUser"),
     GetUserTimeToClaim("/v1/TimeClaim/GetUserTimeToClaim"),
     GetNewTimeTrackerEndPoint("/v1/Calculate/GetUsersBifurcationTotalTime"),
-    GetTotalTimeInSecondsTilesData("/v1/Calculate/TotalTimeInSeconds");
+    GetTotalTimeInSecondsTilesData("/v1/Calculate/TotalTimeInSeconds"),
+    GetYearlyHolidaysByOrgId("/v1/HolidayCalendar/GetYearlyHolidaysByOrgId");
 
     private String resource;
 

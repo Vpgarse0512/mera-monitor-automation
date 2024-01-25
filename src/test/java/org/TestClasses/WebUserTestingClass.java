@@ -2,10 +2,7 @@ package org.TestClasses;
 
 import org.base.BasePage;
 import org.myStepdefs.*;
-import org.pages.MM_AttendanceScreen;
-import org.pages.MM_HomeScreen;
-import org.pages.MM_ProductivityIdleScreen;
-import org.pages.MM_ScreenshotScreen;
+import org.pages.*;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import org.testng.log4testng.Logger;
@@ -134,11 +131,12 @@ public class WebUserTestingClass extends BasePage {
         productive.verifyTheUserProductivityVsIdleDataMappingWithApiS();
         logger.info("TC_29 " + "Verify user can see the Productive vs Idle time of a particular date !");
         //
+        productive.verifyIdleAwayAndTotalTimeOnThisPageIsSameAsIdleTimeOnTimeTrackerPage();
         logger.info("TC_30 " + "Verify Idle Time on this page is same as Idle Time on Time tracker Page !");
         logger.info("TC_31 " + "Verify Away Time on this page is same as away Time on Time tracker Page !");
-        productive.userSelectTheParticularDayAndMonthUsingCalenderOnClaimStatus();
         logger.info("TC_32 " + "Verify Total Time on this page is same as Total Time on Time tracker Page !");
         logger.info("TC_33 " + "Verify sum of productive time and unproductive time should be same as Active time !");
+        productive.userSelectTheParticularDayAndMonthUsingCalenderOnClaimStatus();
         productive.verifyTheUserCanCheckTheProductivityVsIdleReportForPastDate();
         logger.info("TC_34 " + "Verify user should able to click on Productive, unproductive and Idle time graph ");
         //productive.userClickOnTheProductiveGreenGraph();
@@ -272,8 +270,13 @@ public class WebUserTestingClass extends BasePage {
         logger.info("All the time claim status related test cases verified successfully !");
     }
 
+    @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 12)
     public void testHolidayFunctionality() {
+        HolidaySteps holiday = new HolidaySteps();
+        holiday.userClickOnTimeHolidayTab();
+        holiday.verifyAllUIComponentsOnTheHolidayScreen();
         logger.info("TC_61 " + "Verify after clicking on the \"Holiday\" form navigational panel \"Holiday\" report page should get open. !");
+        holiday.verifyTheHolidayDataWithHolidaysApiS();
         logger.info("TC_62 " + "Verify user should be able to see the holidays. !");
     }
 

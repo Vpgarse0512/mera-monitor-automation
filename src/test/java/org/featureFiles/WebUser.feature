@@ -73,6 +73,7 @@ Feature: Web User Test Cases
     And User click on the productivity vs idle tab.
     Then Verify the user can see component in the productivity vs idle screen.
     Then Verify the user productivity vs idle data mapping with api's.
+    Then Verify Idle away and total Time on this page is same as Idle Time on Time tracker Page !
     And User click on the productive green graph.
     Then Verify the popup with productive time column open.
     Then Verify the productive column entries.
@@ -170,7 +171,7 @@ Feature: Web User Test Cases
     When User fill the valid "<email>"email details on email field.
     When User fill the valid "<password>"password details on password field.
     And User click on submit button.
-    And User click on time holiday tab.
+    And User click on holiday tab.
     Then Verify all UI components on the holiday screen.
     Then Verify the holiday data with holidays api's.
     Examples: | email | password |

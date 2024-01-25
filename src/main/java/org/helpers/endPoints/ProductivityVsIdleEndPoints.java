@@ -102,6 +102,6 @@ public class ProductivityVsIdleEndPoints extends RestUtils {
     }
     public static void main(String[] args) {
         ProductivityVsIdleEndPoints productivity = new ProductivityVsIdleEndPoints();
-        System.out.println(productivity.getProductivityVsIdleDetailsMap(3,"January"));
+        System.out.println(productivity.getProductivityVsIdleDetailsMap(18,"January"));
     }
 }

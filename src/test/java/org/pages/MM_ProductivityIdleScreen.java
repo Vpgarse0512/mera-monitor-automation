@@ -31,7 +31,7 @@ public class MM_ProductivityIdleScreen extends BaseTest {
     private WebElement productivity_title;
     @FindBy(xpath = "//input[@class='form-control w-17']")
     private WebElement date_picker;
-    @FindBy(xpath = "//span[@class='text-dark  d-flex mb-1 fs-6']")
+    @FindBy(xpath = "//input[@class='form-control w-17']")
     private WebElement date;
     @FindBy(xpath = "//span[@class='text-success  d-flex mb-1 mx-6 fs-6 ']")
     private WebElement productiveTime;
@@ -43,10 +43,12 @@ public class MM_ProductivityIdleScreen extends BaseTest {
     private WebElement awayTime;
     @FindBy(xpath = "(//span[@class=' d-flex mb-1 fs-6 mx-6 justify-content-center'])[1]")
     private WebElement totalTime;
-    @FindBy(xpath = "//*[@id=\"SvgjsG1556\"]")
+    @FindBy(xpath = "//*[@id=\"SvgjsPath2698\"]")
     private WebElement productiveGreenGraph;
-    @FindBy(xpath = "//*[@id=\"SvgjsPath1170\"]")
+    @FindBy(xpath = "//*[@id=\"SvgjsPath2707\"]")
     private WebElement UnProductiveRedGraph;
+    @FindBy(xpath = "//*[@id=\"SvgjsPath2716\"]")
+    private WebElement idleYellowGraph;
 
     // popup screen
 
@@ -60,6 +62,8 @@ public class MM_ProductivityIdleScreen extends BaseTest {
     private WebElement idlePopupTitle;
     @FindBy(xpath = "(//a[@id='kt_billing_alltime_tab'])[2]")
     private WebElement keyboardMouseStockPopupTitle;
+    @FindBy(xpath = "//h2[@class='noRecordFound']")
+    private WebElement noRecordsFound;
     public void clickOnProductiveVsIdleTab() {
         clickWithoutWait(productivity_Vs_IdleTab);
     }
@@ -101,7 +105,7 @@ public class MM_ProductivityIdleScreen extends BaseTest {
     }
 
     public String getDate() {
-        return getText(date);
+        return getAttribute(date,"value");
     }
 
     public String getProductiveTime() {
@@ -131,6 +135,10 @@ public class MM_ProductivityIdleScreen extends BaseTest {
 
     public void clickOnRedUnProductiveGraph() {
         click(UnProductiveRedGraph);
+    }
+    public void clickOnYellowIdleGraph()
+    {
+        click(idleYellowGraph);
     }
     public void clickOnCrossIcon()
     {
@@ -167,6 +175,11 @@ public class MM_ProductivityIdleScreen extends BaseTest {
     public void clickOnDatePicker()
     {
         click(date_picker);
+    }
+
+    public boolean isNoRecordFoundDisplay()
+    {
+     return isElementDisplayed(noRecordsFound);
     }
     public void selectOldDate(int day, String month) {
         clickOnDatePicker();

@@ -94,6 +94,11 @@ public class TimeDateClass {
         Date currentDate = new Date();
         return dateFormat.format(currentDate);
     }
+    public static String getTodaysDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date currentDate = new Date();
+        return dateFormat.format(currentDate);
+    }
 
 
     /**
