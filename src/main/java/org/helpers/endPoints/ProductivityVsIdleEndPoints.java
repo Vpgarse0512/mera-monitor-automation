@@ -88,15 +88,15 @@ public class ProductivityVsIdleEndPoints extends RestUtils {
         HashMap<String, Object> object = new HashMap<>();
         JsonPath productivity = new ProductivityVsIdleEndPoints().getTotalProductiveHoursByUserDetails(day,month);
         object.put("name",productivity.getString("userName").toString().replaceAll("\\[","").replaceAll("\\]",""));
-        String productiveTime=TimeDateClass.convertSecondsToHHMMSSFormat(Double.parseDouble(productivity.getString("totalProductiveTime").toString().replaceAll("\\[","").replaceAll("\\]","")));
+        String productiveTime=TimeDateClass.convertSecondsToHHMMSSFormat(productivity.getString("totalProductiveTime").toString().replaceAll("\\[","").replaceAll("\\]",""));
         object.put("productiveTime",productiveTime);
-        String unproductiveTime=TimeDateClass.convertSecondsToHHMMSSFormat(Double.parseDouble(productivity.getString("unproductiveTime").toString().replaceAll("\\[","").replaceAll("\\]","")));
+        String unproductiveTime=TimeDateClass.convertSecondsToHHMMSSFormat(productivity.getString("unproductiveTime").toString().replaceAll("\\[","").replaceAll("\\]",""));
         object.put("unproductiveTime",unproductiveTime);
-        String totalIdleTime=TimeDateClass.convertSecondsToHHMMSSFormat(Double.parseDouble(productivity.getString("totalIdleTime").toString().replaceAll("\\[","").replaceAll("\\]","")));
+        String totalIdleTime=TimeDateClass.convertSecondsToHHMMSSFormat(productivity.getString("totalIdleTime").toString().replaceAll("\\[","").replaceAll("\\]",""));
         object.put("idleTime",totalIdleTime);
-        String awayTime=TimeDateClass.convertSecondsToHHMMSSFormat(Double.parseDouble(productivity.getString("awayTime").toString().replaceAll("\\[","").replaceAll("\\]","")));
+        String awayTime=TimeDateClass.convertSecondsToHHMMSSFormat(productivity.getString("awayTime").toString().replaceAll("\\[","").replaceAll("\\]",""));
         object.put("awayTime",awayTime);
-        String totalTime=TimeDateClass.convertSecondsToHHMMSSFormat(Double.parseDouble(productivity.getString("totalTime").toString().replaceAll("\\[","").replaceAll("\\]","")));
+        String totalTime=TimeDateClass.convertSecondsToHHMMSSFormat(productivity.getString("totalTime").toString().replaceAll("\\[","").replaceAll("\\]",""));
         object.put("totalTime",totalTime);
         return object;
     }

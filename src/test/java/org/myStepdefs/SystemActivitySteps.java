@@ -7,6 +7,7 @@ import org.helpers.endPoints.SystemActivityEndPoints;
 import org.junit.Assert;
 import org.openqa.selenium.support.ui.Select;
 import org.pages.MM_HomeScreen;
+import org.pages.MM_ScreenshotScreen;
 import org.pages.MM_SystemActivityScreen;
 import org.testng.asserts.SoftAssert;
 import org.testng.log4testng.Logger;
@@ -164,10 +165,23 @@ public class SystemActivitySteps {
     @Then("Verify user able to change the next and previous button successfully")
     public void verifyUserAbleToChangeTheNextAndPreviousButtonSuccessfully() {
         MM_SystemActivityScreen system = new MM_SystemActivityScreen();
+        try {
+            if (system.isNoRecordDisplay())
+                userSelectTheParticularDayAndMonthUsingCalender();
+        }catch (Exception ex){}
+
         system.sleepTime(1);
         system.clickOnNextButton();
         system.sleepTime(1);
         system.scrollToElement(system.previousButton);
         system.clickOnPreviousButton();
+    }
+    @And("User select the particular day and month using calender.")
+    public void userSelectTheParticularDayAndMonthUsingCalender() {
+        int day = Integer.parseInt(System.getProperty("day"));
+        String month = System.getProperty("month");
+        MM_SystemActivityScreen system = new MM_SystemActivityScreen();
+        system.selectOldDate(day, month);
+        logger.info("user successfully selected mentioned date and month !");
     }
 }

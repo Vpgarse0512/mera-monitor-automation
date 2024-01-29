@@ -1,6 +1,7 @@
 package org.pages;
 
 import org.base.BaseTest;
+import org.myStepdefs.ScreenshotSteps;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -10,6 +11,8 @@ public class MM_TimeClaimStatusScreen extends BaseTest {
     public MM_TimeClaimStatusScreen() {
         PageFactory.initElements(driver, this);
     }
+    private static java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MM_TimeClaimStatusScreen.class.getName());
+
     @FindBy(xpath = "//span[normalize-space()='Status']")
     private WebElement statusTab;
     @FindBy(xpath = "//span[@class='card-label fw-bolder fs-3 mb-1']")
@@ -46,7 +49,21 @@ public class MM_TimeClaimStatusScreen extends BaseTest {
     private WebElement approvedBy;
     @FindBy(xpath = "//span[@class=' badge fw-bold me-auto px-4 py-3 badge-light-success ']")
     private WebElement status;
+    @FindBy(xpath = "//h2[@class='noRecordFound user-select-none']")
+    private WebElement noRecordFound;
 
+    public Object foundNoRecordText()
+    {
+        String str = "dataPresent";
+        try {
+
+            if (noRecordFound.isDisplayed())
+                str = null;
+        }catch (Exception ex){
+            logger.info(ex.toString());
+        }
+        return str;
+    }
     public String getUserName()
     {
         return getText(userName);

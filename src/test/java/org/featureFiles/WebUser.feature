@@ -136,6 +136,10 @@ Feature: Web User Test Cases
     And User select the particular day and month using calender.
     Then Verify all the components on the screenshot screen.
     Then Verify the screen shots and screenshot time with api's.
+    Then Verify user able to maximize the screenshot image.
+    Then Verify user should be able to minimize the screenshot images.
+    Then Verify user can start and stop the slideshow of the screenshot.
+    Then Verify user should able to change the date.
     Examples: | email | password |
     | email | password |
 

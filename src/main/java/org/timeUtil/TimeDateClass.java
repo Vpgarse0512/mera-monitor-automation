@@ -15,11 +15,23 @@ public class TimeDateClass {
     /**
      * method is to convert seconds into hours minutes and seconds format
      *
-     * @param seconds
+     * @param second
      * @return string time format in HH:MM:SS
      */
-    public static String convertSecondsToHHMMSSFormat(double seconds) {
+    public static String convertSecondsToHHMMSSFormat(String second) {
+        Double seconds = null;
+        //System.out.println(second);
         String time;
+        if (second == null) {
+            return time="-";
+        }else {
+        try {
+            seconds= Double.parseDouble(second);
+        }catch (Exception ex)
+        {
+            System.out.println(ex);
+        }
+
         int hours = (int) (seconds / 3600);
         int min = (int) ((seconds % 3600) / 60);
         int remainingSeconds = (int) (seconds % 60);
@@ -29,11 +41,14 @@ public class TimeDateClass {
                 time = "-";
         } catch (Exception e) {
 
-        }
+        }}
         return time;
     }
 
-    public static String convertSecondsToHHMMSS(double seconds) {
+    public static String convertSecondsToHHMMSS(Double seconds) {
+        if (seconds == null) {
+            return "-";
+        }
         String time;
         int hours = (int) (seconds / 3600);
         int min = (int) ((seconds % 3600) / 60);
@@ -215,7 +230,7 @@ public class TimeDateClass {
 
 
     public static void main(String[] args) {
-        System.out.println(convertSecondsToHHMMSSFormat(3797));//3908 - 3797  01:05:08  01:03:17
+        //System.out.println(convertSecondsToHHMMSSFormat(3797));//3908 - 3797  01:05:08  01:03:17
         System.out.println(getToDate());
         System.out.println(getFromDate());
         System.out.println(getCurrentDateWithHHMMSSTimeFormat());

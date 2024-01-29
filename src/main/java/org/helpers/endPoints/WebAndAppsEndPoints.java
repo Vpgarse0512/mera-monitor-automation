@@ -89,7 +89,7 @@ public class WebAndAppsEndPoints extends RestUtils {
         String url = getGetWebAndAppsDetails().getString("[" + index + "].url");
         String time = getGetWebAndAppsDetails().getString("[" + index + "].totalTime");
         map.put("url",url);
-        map.put("totalTime",TimeDateClass.convertSecondsToHHMMSSFormat(Double.parseDouble(time)));
+        map.put("totalTime",TimeDateClass.convertSecondsToHHMMSSFormat(time));
         return map;
     }
 

@@ -84,6 +84,7 @@ public class LoginEndPoints extends RestUtils {
         Assert.assertEquals(getAPIResponseCode(), 200);
         Assert.assertEquals(getLoginAPIResponseMessage(), "Login Successful");
         LinkedHashMap<String,Object> body = new LinkedHashMap<>();
+        body.put("email",jsonPath.getString("email"));
         body.put("userId", jsonPath.getString("userId"));
         body.put("organizationId", jsonPath.getString("organizationId"));
         body.put("fromDate", TimeDateClass.getCustomDateAndTime(8,"06:00:00"));

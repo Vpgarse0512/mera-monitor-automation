@@ -34,10 +34,10 @@ public class ReportTabSteps {
         Assert.assertEquals(timeTracker.getUserName(), trackerDetails.getString("[1].employeeName"));
         Assert.assertEquals(timeTracker.getDate(), trackerDetails.getString("[1].reportDate").replace("-", "/"));
         Assert.assertEquals(timeTracker.getDepartment(), trackerDetails.getString("[1].department"));
-        Assert.assertEquals(timeTracker.getActiveTime(), TimeDateClass.convertSecondsToHHMMSSFormat(Double.parseDouble(trackerDetails.getString("[1].activeTime"))));
-        Assert.assertEquals(timeTracker.getIdleTime(), TimeDateClass.convertSecondsToHHMMSSFormat(Double.parseDouble(trackerDetails.getString("[1].idleTime"))));
-        Assert.assertEquals(timeTracker.getAwayTime(), TimeDateClass.convertSecondsToHHMMSSFormat(Double.parseDouble(trackerDetails.getString("[1].awayTime"))));
-        Assert.assertEquals(timeTracker.getTotalTime(), TimeDateClass.convertSecondsToHHMMSSFormat(Double.parseDouble(trackerDetails.getString("[1].totalTime"))));
+        Assert.assertEquals(timeTracker.getActiveTime(), TimeDateClass.convertSecondsToHHMMSSFormat(trackerDetails.getString("[1].activeTime")));
+        Assert.assertEquals(timeTracker.getIdleTime(), TimeDateClass.convertSecondsToHHMMSSFormat(trackerDetails.getString("[1].idleTime")));
+        Assert.assertEquals(timeTracker.getAwayTime(), TimeDateClass.convertSecondsToHHMMSSFormat(trackerDetails.getString("[1].awayTime")));
+        Assert.assertEquals(timeTracker.getTotalTime(), TimeDateClass.convertSecondsToHHMMSSFormat(trackerDetails.getString("[1].totalTime")));
         Assert.assertEquals(timeTracker.getFirstActivity(), StringUtil.removeStringFromSpecificIndex(trackerDetails.getString("[1].inTime"),0,11));// first activity
         Assert.assertEquals(StringUtil.removeStringFromSpecificIndex(timeTracker.getLastActivity(),0,1),
                 StringUtil.removeStringFromSpecificIndex(trackerDetails.getString("[1].outTime"),0,11));// last activity

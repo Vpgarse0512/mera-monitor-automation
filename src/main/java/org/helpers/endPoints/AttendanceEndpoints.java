@@ -91,7 +91,7 @@ public class AttendanceEndpoints extends RestUtils {
         map.put("expectedHour",expectedHour);
         String loggedHour=getAttendanceDetails(day,month).getString("activeTime").replaceAll("\\[","").replaceAll("\\]","");
         double loggedHours = Double.parseDouble(loggedHour);
-        map.put("loggedHours",TimeDateClass.convertSecondsToHHMMSSFormat(loggedHours));
+        map.put("loggedHours",TimeDateClass.convertSecondsToHHMMSSFormat(loggedHour));
         String holiday=getAttendanceDetails(day,month).getString("holiday").replaceAll("\\[","").replaceAll("\\]","");
         map.put("holiday",holiday);
         String leaves=getAttendanceDetails(day,month).getString("leaves").replaceAll("\\[","").replaceAll("\\]","");

@@ -95,6 +95,7 @@ public class TimeClaimSteps {
     @And("User click on status option sub tab.")
     public void userClickOnStatusOptionSubTab() {
         MM_TimeClaimStatusScreen timeStatus = new MM_TimeClaimStatusScreen();
+        timeStatus.sleepTime(1);
         timeStatus.clickOnStatusTab();
         logger.info("clicked on status tab successfully !");
     }

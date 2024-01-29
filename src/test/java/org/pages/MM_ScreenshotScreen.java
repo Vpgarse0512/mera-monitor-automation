@@ -1,13 +1,19 @@
 package org.pages;
 
+import io.restassured.path.json.JsonPath;
 import org.base.BaseTest;
+import org.helpers.endPoints.ScreenshotEndPoint;
 import org.myStepdefs.ScreenshotSteps;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
+import org.testng.asserts.SoftAssert;
+import org.timeUtil.TimeDateClass;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public class MM_ScreenshotScreen extends BaseTest {
@@ -16,13 +22,15 @@ public class MM_ScreenshotScreen extends BaseTest {
     {
         PageFactory.initElements(driver,this);
     }
-    private static java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ScreenshotSteps.class.getName());
+    private static java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MM_ScreenshotScreen.class.getName());
     @FindBy(xpath = "//span[normalize-space()='Screenshot']")
     private WebElement screenShot_tab;
     @FindBy(xpath = "//span[@class='card-label fw-bolder fs-3 mb-1']")
-    private WebElement screenShotTitle;
+    public WebElement screenShotTitle;
+    @FindBy(xpath = "//div[@class='cursor-pointer symbol symbol-30px symbol-md-40px']")
+    public WebElement logo;
     @FindBy(xpath = "//input[@placeholder='Select a Date']")
-    private WebElement datePicker;
+    public WebElement datePicker;
     @FindBy(xpath = "//span[@class='image-gallery-index-total']")
     private WebElement maxScreenshotCount;
     @FindBy(xpath = "//span[@class='image-gallery-index-current']")
@@ -35,6 +43,33 @@ public class MM_ScreenshotScreen extends BaseTest {
     private List<WebElement> imageTimes;
     @FindBy(xpath = "//button[@aria-label='Play or Pause Slideshow']//*[name()='svg']")
     public WebElement playButton;
+    @FindBy(xpath = "//h2[text()='No Screenshots Found']")
+    public WebElement noScreenShotFoundText;
+    @FindBy(xpath = "//button[@class='image-gallery-icon image-gallery-fullscreen-button']")
+    private WebElement maximizeScreenShot;
+    @FindBy(xpath = "//button[@class='image-gallery-icon image-gallery-play-button']")
+    public WebElement slideShowButton;
+
+    public void clickOnMaximizeScreenButton()
+    {
+        click(maximizeScreenShot);
+    }
+    public void clickOnSlideShowButton()
+    {
+        click(slideShowButton);
+    }
+    public Object foundNoScreenShotText()
+    {
+        String str = "dataPresent";
+        try {
+
+            if (noScreenShotFoundText.isDisplayed())
+                str = null;
+        }catch (Exception ex){
+            logger.info(ex.toString());
+        }
+        return str;
+    }
 
     public boolean isPlayButtonDisplayed()
     {
@@ -86,18 +121,25 @@ public class MM_ScreenshotScreen extends BaseTest {
     public void verifyScreenshotsOnScreenshotScreen()
     {
         logger.info("Screenshot taken for the user is 'Count :'"+getScreenshotMaxCount());
-        sleepTime(4);
-        int i=1;
-        while (i<=getScreenshotMaxCount())
+        sleepTime(2);
+        SoftAssert soft=new SoftAssert();
+        LinkedHashMap<String, ArrayList<String>> api = new ScreenshotEndPoint().getScreenShotStamp(TimeDateClass.getTodaysDate());
+        int i=0;
+        scrollToElement(nextSlid);
+        //while (i<=getScreenshotMaxCount()-1)
+        while (i<=10)
         {
-            String time=driver.findElement(By.xpath("(//span[@class='image-gallery-description'])["+i+"]")).getText();
-            System.out.println(time);
+            int j=i+1;
+            String time=driver.findElement(By.xpath("(//span[@class='image-gallery-description'])["+j+"]")).getText();
+            System.out.println(time+"   "+api.get("timeStamp").get(i).replace(".",":"));
+            soft.assertTrue(time.contains(api.get("timeStamp").get(i)));
             //Assert.assertEquals(time,);
             sleepTime(1);
             clickOnNext();
 
             i++;
         }
+        soft.assertAll();
     }
     public void selectOldDate(int day, String month) {
         clickOnDatePicker();

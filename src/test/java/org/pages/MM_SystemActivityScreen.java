@@ -42,6 +42,20 @@ public class MM_SystemActivityScreen extends BaseTest {
 
     @FindBy(xpath = "//*[@id=\"kt_content_container\"]/div/div/div/div[2]/div/div[1]/table/tbody/tr[1]/td[4]/span")
     private WebElement systemFirstActivity;
+    @FindBy(xpath = "//h2[@class='noRecordFound']")
+    private WebElement noRecordFound;
+
+    public boolean isNoRecordDisplay()
+    {
+        boolean value = false;
+        try {
+            value=noRecordFound.isDisplayed();
+        }catch (Exception ex){
+
+        }
+        return value;
+    }
+
     public WebElement getDropdownElement()
     {
         return dropdownSelection;
@@ -142,6 +156,8 @@ public void clickOnNextButton()
         clickOnDatePicker();
         for (int i = 0; i <= 12; i++) {
             WebElement months = driver.findElement(By.xpath("//div[@class='react-datepicker__current-month']"));
+            System.out.println(months.getText());
+            System.out.println(months);
             if (months.getText().contains(month)) {
                 driver.findElement(By.xpath("//div[text()='"+day+"']")).click();
                 break;
