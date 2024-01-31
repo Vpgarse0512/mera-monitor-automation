@@ -8,6 +8,8 @@ import org.testng.Assert;
 import org.testng.asserts.SoftAssert;
 import org.timeUtil.TimeDateClass;
 
+import java.util.HashMap;
+
 public class HomeSteps {
     private static java.util.logging.Logger logger = java.util.logging.Logger.getLogger(HomeSteps.class.getName());
     String currentDay;
@@ -55,12 +57,12 @@ public class HomeSteps {
     @Then("Verify user should able to see all data's of current day on all {int} tiles.")
     public void verifyUserShouldAbleToSeeAllDataSOfCurrentDayOnAllTiles(int arg0) {
         MM_HomeScreen home=new MM_HomeScreen();
-        FiveTilesDataEndPoint five=new FiveTilesDataEndPoint();
+        HashMap<String, Object> five = new FiveTilesDataEndPoint().getFiveTilesDataMap();
         SoftAssert soft=new SoftAssert();
-        soft.assertEquals(home.getFirstActivity(),five.getFiveTilesDataMap().get("firstActivity"));
-        soft.assertEquals(home.getLastActivity(),five.getFiveTilesDataMap().get("lastActivity"));
-        soft.assertEquals(home.getActiveTimePercent(),five.getFiveTilesDataMap().get("activePercent"));
-        soft.assertEquals(home.getIdleTimePercent(),five.getFiveTilesDataMap().get("idlePercent"));
+        soft.assertEquals(home.getFirstActivity(),five.get("firstActivity"));
+        soft.assertEquals(home.getLastActivity(),five.get("lastActivity"));
+        soft.assertEquals(home.getActiveTimePercent(),five.get("activePercent"));
+        soft.assertEquals(home.getIdleTimePercent(),five.get("idlePercent"));
         soft.assertAll();
         logger.info("successfully validated five tiles data !");
     }

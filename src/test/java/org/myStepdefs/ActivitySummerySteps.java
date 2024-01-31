@@ -65,11 +65,11 @@ public class ActivitySummerySteps {
             SoftAssert soft = new SoftAssert();
             //String list[] = {"Start Time", "End Time", "Spend Time", "Activity Status"};
             //String list[] = {"startTime", "endTime", "spentTime", "userActivityStatus"};
-            for (int i = 0; i <= 9; i++) {
+            for (int i = 0; i <= size-1; i++) {
                 //if (key.equalsIgnoreCase("Start Time")) {
                 soft.assertEquals(summery.getTableData().get("Start Time").get(i), api.get("startTime").get(i));
                 soft.assertEquals(summery.getTableData().get("End Time").get(i), api.get("endTime").get(i));
-                soft.assertEquals(TimeDateClass.convertSecondsToHHMMSSFormat(summery.getTableData().get("Spend Time").get(i)), api.get("spentTime").get(i));
+                soft.assertEquals(summery.getTableData().get("Spend Time").get(i), api.get("spentTime").get(i));
                 soft.assertEquals(summery.getTableData().get("Activity Status").get(i), api.get("userActivityStatus").get(i));
             }
             soft.assertAll();

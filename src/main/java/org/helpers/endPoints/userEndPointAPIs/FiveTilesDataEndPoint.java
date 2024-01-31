@@ -88,10 +88,10 @@ public class FiveTilesDataEndPoint extends RestUtils {
         HashMap<String,Object> map=new HashMap<>();
         JsonPath tiles = getTotalProductiveHoursByUserDetails();
         map.put("name",tiles.getString("userName"));
-        map.put("totalHours",TimeDateClass.convertSecondsToHHMMSS(Double.parseDouble(tiles.getString("totalTime"))));
-        map.put("activeTime",TimeDateClass.convertSecondsToHHMMSS(Double.parseDouble(tiles.getString("totalActiveTime"))));
-        map.put("idleTime",TimeDateClass.convertSecondsToHHMMSS(Double.parseDouble(tiles.getString("totalIdleTime"))));
-        map.put("awayTime",TimeDateClass.convertSecondsToHHMMSS(Double.parseDouble(tiles.getString("awayTime"))));
+        map.put("totalHours",TimeDateClass.convertSecondsToHHMMSS(tiles.getString("totalTime")));
+        map.put("activeTime",TimeDateClass.convertSecondsToHHMMSS(tiles.getString("totalActiveTime")));
+        map.put("idleTime",TimeDateClass.convertSecondsToHHMMSS(tiles.getString("totalIdleTime")));
+        map.put("awayTime",TimeDateClass.convertSecondsToHHMMSS(tiles.getString("awayTime")));
         String[] first = tiles.getString("firstActivity").split(" ");
         map.put("firstActivity",TimeDateClass.convertTimeFormat(first[1]+" "+first[2],"h:mm:ss a", "hh:mm:ss a"));
         String[] last = tiles.getString("lastActivity").split(" ");

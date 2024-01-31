@@ -39,12 +39,11 @@ public class HolidaySteps {
         HolidayEndpoints api = new HolidayEndpoints();
         int size = api.getHolidayList().getList("").size();
         LinkedHashMap<String, List<String>> linkList = new HolidayEndpoints().getHolidayData();
-        //System.out.println(holiday.getTableData().get("Name").get(2));
         SoftAssert soft = new SoftAssert();
-        String[] list = {"Name", "Date"};
-        // for (String key : list) {
+        //String[] list = {"Name", "Date"};
         try {
-            for (int i = 0; i < size - 1; i++) {
+            //for (int i = 0; i < size - 1; i++) {
+            for (int i = 0; i < 9; i++) {
                 if (i == 9) {
                     holiday.clickOnNextButton();
                     //System.out.println("clicked on next button !");
@@ -65,7 +64,6 @@ public class HolidaySteps {
             System.out.println("No Holidays Found");
 
         }
-        //}
         soft.assertAll();
     }
 }

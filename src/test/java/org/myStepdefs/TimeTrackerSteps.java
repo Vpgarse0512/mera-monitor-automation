@@ -24,6 +24,7 @@ public class TimeTrackerSteps {
     public void verifyUserIsAbleToSeeTheDataForADateRange() {
         MM_TimeTrackerScreen tracker = new MM_TimeTrackerScreen();
         String month = System.getProperty("month");
+        System.out.println(date);
         tracker.selectOldDate(Integer.parseInt(date), month);
         tracker.sleepTime(7);
     }
@@ -91,19 +92,6 @@ public class TimeTrackerSteps {
         int size=tracker.getTimeTrackerRangData(toDay, Integer.parseInt(date)).getList("").size();
         //System.out.println(size);
         String [] keys= {"userName","date","totalTime","totalActiveTime","totalIdleTime","awayTime","firstActivity","lastActivity","department","timeZone"};
-        /*Map<String, List<String>> allRowsData = new HashMap<>();
-
-        for (String key:keys) {
-            List<String> cellData = new java.util.ArrayList<>();
-            for (int i = 0; i <= size - 1; i++) {
-                //soft.assertEquals(time.);
-                String data = tracker.getTimeTrackerRangData(toDay, Integer.parseInt(date)).getString("[" + i + "]." + key + "");
-                cellData.add(data);
-            }
-            allRowsData.put(key,cellData);
-        }
-        System.out.println(allRowsData);
-        System.out.println(time.getTableData());*/
 
         Map<String, List<String>> apiData = tracker.range(size,keys,toDay,date);
         for (int i=0;i<10;i++)

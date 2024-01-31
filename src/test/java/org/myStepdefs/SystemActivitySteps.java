@@ -65,7 +65,7 @@ public class SystemActivitySteps {
                 soft.assertEquals(allData.get("Apps / URL's").get(i), systemActivityData.get("processName").get(i));
                 soft.assertEquals(allData.get("Title").get(i), systemActivityData.get("titleName").get(i));
                 soft.assertEquals(allData.get("Start Time").get(i), TimeDateClass.convertDateFormat(systemActivityData.get("startTime").get(i), "M/dd/yyyy hh:mm:ss a", "hh:mm:ss"));
-                soft.assertTrue(allData.get("Time Spent").get(i).contains(TimeDateClass.convertSecondsToHHMMSS(Double.parseDouble(systemActivityData.get("processTotalTimeSeconds").get(i)))));
+                soft.assertTrue(allData.get("Time Spent").get(i).contains(TimeDateClass.convertSecondsToHHMMSS(systemActivityData.get("processTotalTimeSeconds").get(i))));
             }
             soft.assertAll();
         /*expected [] but found [msedgewebview2.exe],
@@ -149,7 +149,7 @@ public class SystemActivitySteps {
                 soft.assertEquals(allData.get("Apps / URL's").get(i), systemActivityData.get("processName").get(i));
                 soft.assertEquals(allData.get("Title").get(i), systemActivityData.get("titleName").get(i));
                 soft.assertEquals(allData.get("Start Time").get(i), TimeDateClass.convertDateFormat(systemActivityData.get("startTime").get(i), "M/dd/yyyy hh:mm:ss a", "hh:mm:ss"));
-                soft.assertTrue(allData.get("Time Spent").get(i).contains(TimeDateClass.convertSecondsToHHMMSS(Double.parseDouble(systemActivityData.get("processTotalTimeSeconds").get(i)))));
+                soft.assertTrue(allData.get("Time Spent").get(i).contains(TimeDateClass.convertSecondsToHHMMSS(systemActivityData.get("processTotalTimeSeconds").get(i))));
             }
             soft.assertAll();
         /*expected [] but found [msedgewebview2.exe],

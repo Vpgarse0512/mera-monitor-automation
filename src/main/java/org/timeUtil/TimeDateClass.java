@@ -47,16 +47,28 @@ public class TimeDateClass {
         return time;
     }
 
-    public static String convertSecondsToHHMMSS(Double seconds) {
-        if (seconds == null) {
-            return "-";
-        }
+    public static String convertSecondsToHHMMSS(String seconds) {
+        Double second = null;
+        //System.out.println(second);
         String time;
-        int hours = (int) (seconds / 3600);
-        int min = (int) ((seconds % 3600) / 60);
-        int remainingSeconds = (int) (seconds % 60);
-        return String.format("%02d:%02d:%02d", hours, min, remainingSeconds).trim();
+        if (seconds == null) {
+            return time="-";
+        } else if (seconds=="") {
+            return time="-";
+        } else {
+            try {
+                second = Double.parseDouble(seconds);
+            } catch (Exception ex) {
+                System.out.println(ex);
+            }
+        }
+        int hours = (int) (second / 3600);
+        int min = (int) ((second % 3600) / 60);
+        int remainingSeconds = (int) (second % 60);
+           time= String.format("%02d:%02d:%02d", hours, min, remainingSeconds).trim();
+        return time;
     }
+
 
     /**
      * method is to convert seconds into hours minutes and seconds in givenformat
@@ -225,7 +237,7 @@ public class TimeDateClass {
     public static String addTime(String time1, String time2) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-        time2 = convertSecondsToHHMMSS(Double.parseDouble(time2));
+        time2 = String.valueOf(Double.parseDouble(convertSecondsToHHMMSS(time2)));
         LocalTime localTime1 = LocalTime.parse(time1, formatter);
         LocalTime localTime2 = LocalTime.parse(time2, formatter);
 
