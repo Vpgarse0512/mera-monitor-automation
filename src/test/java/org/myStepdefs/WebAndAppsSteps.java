@@ -7,7 +7,8 @@ import org.testng.asserts.SoftAssert;
 import org.testng.log4testng.Logger;
 
 public class WebAndAppsSteps {
-    private static Logger logger = Logger.getLogger(WebAndAppsSteps.class.getName().getClass());
+    private static java.util.logging.Logger logger = java.util.logging.Logger.getLogger(WebAndAppsSteps.class.getName());
+
     @And("User click on the web and apps tab.")
     public void userClickOnTheWebAndAppsTab() {
         MM_WebAppsScreen webapps=new MM_WebAppsScreen();
@@ -30,7 +31,7 @@ public class WebAndAppsSteps {
         try {
             soft.assertEquals(webapps.getTotalTimeSpendTitle(),"Total Time Spent");
         }catch (Exception ex){
-            logger.info(ex);
+            logger.info(ex.toString());
         }
 
         logger.info("all the component tittle has been verified successfully !");

@@ -7,7 +7,7 @@ import org.testng.asserts.SoftAssert;
 import org.testng.log4testng.Logger;
 
 public class TimelineSteps {
-    private static Logger logger = Logger.getLogger(ProductiveVsIdleSteps.class.getName().getClass());
+    private static java.util.logging.Logger logger = java.util.logging.Logger.getLogger(TimelineSteps.class.getName());
     @And("User click on the timeline tab.")
     public void userClickOnTheTimelineTab() {
         MM_TimelinesScreen time=new MM_TimelinesScreen();

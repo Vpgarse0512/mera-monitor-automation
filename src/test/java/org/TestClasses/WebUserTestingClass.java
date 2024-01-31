@@ -118,9 +118,27 @@ public class WebUserTestingClass extends BasePage {
 
     }
 
-    // Assertion failing
-    //expected [01:40:19] but found [00:02:15] away time
+    // Done Successfully
     @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 5)
+    public void testActivitySummeryFunctionality() {
+        HomeSteps homeS = new HomeSteps();
+        homeS.userClickOnTheReportTab();
+        ActivitySummerySteps summery=new ActivitySummerySteps();
+        summery.userClickOnTheActivitySummeryTab();
+        logger.info("User clicked on activity summery tab successfully !");
+        homeS.userClickOnTheReportTab();
+        summery.verifyTheUserCanSeeComponentInTheActivitySummery();
+        logger.info("Verified activity summery components from screen successfully !");
+        summery.verifyTheUserActivitySummeryDataMappingWithApiS();
+        logger.info("Verified activity summery data with api's.");
+        summery.verifyTheUserTableActivitySummeryMappingWithApiS();
+        logger.info("Verified table summery data with api's.");
+
+    }
+
+
+    //Done successfully
+    @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 6)
     public void testReportProductivityVsIdleComponent() {
         HomeSteps homeS = new HomeSteps();
         homeS.userClickOnTheReportTab();
@@ -131,7 +149,6 @@ public class WebUserTestingClass extends BasePage {
         logger.info("TC_28 " + "Verify user should able to open Productivity vs Idle Page !");
         productive.verifyTheUserProductivityVsIdleDataMappingWithApiS();
         logger.info("TC_29 " + "Verify user can see the Productive vs Idle time of a particular date !");
-        //
         productive.verifyIdleAwayAndTotalTimeOnThisPageIsSameAsIdleTimeOnTimeTrackerPage();
         logger.info("TC_30 " + "Verify Idle Time on this page is same as Idle Time on Time tracker Page !");
         logger.info("TC_31 " + "Verify Away Time on this page is same as away Time on Time tracker Page !");
@@ -140,6 +157,8 @@ public class WebUserTestingClass extends BasePage {
         productive.userSelectTheParticularDayAndMonthUsingCalenderOnClaimStatus();
         productive.verifyTheUserCanCheckTheProductivityVsIdleReportForPastDate();
         logger.info("TC_34 " + "Verify user should able to click on Productive, unproductive and Idle time graph ");
+        /*****************Element are not clickable ************************/
+        /*****************Hence developed method is not working ***********/
         //productive.userClickOnTheProductiveGreenGraph();
         //productive.verifyThePopupWithProductiveTimeColumnOpen();
         //productive.verifyTheProductiveColumnEntries();
@@ -152,7 +171,7 @@ public class WebUserTestingClass extends BasePage {
 
     }
 
-    @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 6)
+    @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 7)
     public void testReportWebAppsComponents() {
         HomeSteps homeS = new HomeSteps();
         homeS.userClickOnTheReportTab();
@@ -175,7 +194,7 @@ public class WebUserTestingClass extends BasePage {
     }
 
     //Done
-    @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 7)
+    @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 8)
     public void testReportAttendanceComponents() {
         HomeSteps homeS = new HomeSteps();
         homeS.userClickOnTheReportTab();
@@ -194,7 +213,7 @@ public class WebUserTestingClass extends BasePage {
         // pending previous date
     }
 
-    @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 8)
+    @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 9)
     public void testReportTimelinesComponents() {
         HomeSteps homeS = new HomeSteps();
         homeS.userClickOnTheReportTab();
@@ -213,7 +232,7 @@ public class WebUserTestingClass extends BasePage {
     }
 
     // Done
-    @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 9)
+    @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 10)
     public void testScreenshotModuleFunctionality() {
         ScreenshotSteps screenshot = new ScreenshotSteps();
         screenshot.userClickOnScreenshotTab();
@@ -237,7 +256,7 @@ public class WebUserTestingClass extends BasePage {
     }
 
     // Done
-    @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 10)
+    @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 11)
     public void testTimeClaimFunctionality() {
         TimeClaimSteps claim = new TimeClaimSteps();
         claim.userClickOnTimeClaimTab();
@@ -258,8 +277,8 @@ public class WebUserTestingClass extends BasePage {
     }
 
     //Done but assertion failed due to time stamp
-   // expected [07:32] but found [19:32], expected [07:50] but found [19:50]
-    @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 11)
+    // expected [07:32] but found [19:32], expected [07:50] but found [19:50]
+    @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 12)
     public void testTimeClaimStatusFunctionality() {
         TimeClaimSteps claim = new TimeClaimSteps();
         claim.userClickOnTimeClaimTab();
@@ -278,7 +297,7 @@ public class WebUserTestingClass extends BasePage {
     }
 
     // Done Successfully !
-    @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 12)
+    @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 13)
     public void testHolidayFunctionality() {
         HolidaySteps holiday = new HolidaySteps();
         holiday.userClickOnTimeHolidayTab();

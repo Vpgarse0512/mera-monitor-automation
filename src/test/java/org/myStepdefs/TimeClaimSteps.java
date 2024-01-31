@@ -2,10 +2,8 @@ package org.myStepdefs;
 
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
-import io.restassured.path.json.JsonPath;
-import org.helpers.endPoints.ClaimTimeForUserStatusEndPoints;
-import org.helpers.endPoints.UserTimeToClaimEndPoint;
-import org.pages.MM_HolidayScreen;
+import org.helpers.endPoints.userEndPointAPIs.ClaimTimeForUserStatusEndPoints;
+import org.helpers.endPoints.userEndPointAPIs.UserTimeToClaimEndPoint;
 import org.pages.MM_TimeClaimScreen;
 import org.pages.MM_TimeClaimStatusScreen;
 import org.testng.asserts.SoftAssert;
@@ -17,8 +15,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 public class TimeClaimSteps {
-    private static Logger logger = Logger.getLogger(TimeClaimSteps.class.getName().getClass());
-
+    private static java.util.logging.Logger logger = java.util.logging.Logger.getLogger(TimeClaimSteps.class.getName());
     @And("User click on time claim tab.")
     public void userClickOnTimeClaimTab() {
         MM_TimeClaimScreen timeClaim = new MM_TimeClaimScreen();

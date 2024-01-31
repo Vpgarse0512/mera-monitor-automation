@@ -24,7 +24,9 @@ public class TimeDateClass {
         String time;
         if (second == null) {
             return time="-";
-        }else {
+        } else if (second=="") {
+            return time="-";
+        } else {
         try {
             seconds= Double.parseDouble(second);
         }catch (Exception ex)
@@ -194,14 +196,20 @@ public class TimeDateClass {
     public static String convertTimeFormat(String inputTime, String inputFormat, String outputFormat) {
         SimpleDateFormat inputTimeFormat = new SimpleDateFormat(inputFormat);
         SimpleDateFormat outputTimeFormat = new SimpleDateFormat(outputFormat);
+        Double seconds = null;
+        String times;
+        if (inputTime == "") {
+            return times="-";
+        }else {
 
-        try {
-            Date time = inputTimeFormat.parse(inputTime);
-            return outputTimeFormat.format(time);
-        } catch (ParseException e) {
-            // Handle parsing exception, if any
-            e.printStackTrace();
-            return null;
+            try {
+                Date time = inputTimeFormat.parse(inputTime);
+                return times=outputTimeFormat.format(time);
+            } catch (ParseException e) {
+                // Handle parsing exception, if any
+                e.printStackTrace();
+                return null;
+            }
         }
     }
 
@@ -227,6 +235,14 @@ public class TimeDateClass {
 
         return sumTime.format(formatter);
     }
+    public static String getMonthName(int monthNumber) {
+        if (monthNumber < 1 || monthNumber > 12) {
+            throw new IllegalArgumentException("Month number must be between 1 and 12");
+        }
+
+        Month month = Month.of(monthNumber);
+        return month.getDisplayName(java.time.format.TextStyle.FULL, java.util.Locale.getDefault());
+    }
 
 
     public static void main(String[] args) {
@@ -245,9 +261,11 @@ public class TimeDateClass {
         String time1 = "10:55:07";
         String time2 = "00:00:55";
 
-        String sumTime = addTime(time1, time2);
-        System.out.println("Sum of times: " + sumTime);
+        //String sumTime = addTime(time1, time2);
+        //System.out.println("Sum of times: " + sumTime);
 
+        System.out.println(convertDateFormat("2024-01-31T00:00:00","yyyy-MM-dd'T'HH:mm:ss","dd/MM/yyyy"));
+        System.out.println(getMonthName(12));
         /*00:05:18
         2023-12-13
         2023-12-12

@@ -2,19 +2,18 @@ package org.myStepdefs;
 
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
-import io.restassured.path.json.JsonPath;
-import org.helpers.endPoints.AttendaceByUserEndPoint;
-import org.helpers.endPoints.AttendanceEndpoints;
+import org.helpers.endPoints.userEndPointAPIs.AttendaceByUserEndPoint;
+import org.helpers.endPoints.userEndPointAPIs.AttendanceEndpoints;
 import org.pages.MM_AttendanceScreen;
 import org.testng.asserts.SoftAssert;
 import org.testng.log4testng.Logger;
-import org.timeUtil.TimeDateClass;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class AttendanceSteps {
-    private static Logger logger = Logger.getLogger(AttendanceSteps.class.getName().getClass());
+
+    private static java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AttendanceSteps.class.getName());
 
     @And("User click on the attendance tab.")
     public void userClickOnTheAttendanceTab() {

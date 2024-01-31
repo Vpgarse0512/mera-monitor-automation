@@ -1,14 +1,11 @@
 package org.pages;
 
-import io.restassured.path.json.JsonPath;
 import org.base.BaseTest;
-import org.helpers.endPoints.ScreenshotEndPoint;
-import org.myStepdefs.ScreenshotSteps;
+import org.helpers.endPoints.userEndPointAPIs.ScreenshotEndPoint;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import org.testng.Assert;
 import org.testng.asserts.SoftAssert;
 import org.timeUtil.TimeDateClass;
 

@@ -1,4 +1,4 @@
-package org.helpers.endPoints;
+package org.helpers.endPoints.userEndPointAPIs;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;

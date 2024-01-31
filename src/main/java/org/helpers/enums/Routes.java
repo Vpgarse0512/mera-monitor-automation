@@ -22,7 +22,8 @@ public enum Routes {
     GetNewTimeTrackerEndPoint("/v1/Calculate/GetUsersBifurcationTotalTime"),
     GetTotalTimeInSecondsTilesData("/v1/Calculate/TotalTimeInSeconds"),
     GetYearlyHolidaysByOrgId("/v1/HolidayCalendar/GetYearlyHolidaysByOrgId"),
-    GetScreenshotsEndPoint("/v1/CloudStorageScreenshots/GetScreenshots");
+    GetScreenshotsEndPoint("/v1/CloudStorageScreenshots/GetScreenshots"),
+    GetSystemActivityReport("/v1/SystemActivityReport/GetSystemActivityReport");
 
     private String resource;
 

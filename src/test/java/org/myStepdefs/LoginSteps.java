@@ -14,8 +14,8 @@ import org.propertyHelper.PropertiesUtils;
 import org.propertyHelper.PropertyFileEnum;
 
 public class LoginSteps {
-    Logger logger = Logger.getLogger(LoginSteps.class);
 
+    private static java.util.logging.Logger logger = java.util.logging.Logger.getLogger(LoginSteps.class.getName());
     @When("User fill the invalid {string}email details on email field.")
     public void userFillTheInvalidEmailDetailsOnEmailField(String invalidEmail) {
         String email = PropertiesUtils.getProperty(PropertyFileEnum.CREAD, invalidEmail);

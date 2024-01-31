@@ -64,6 +64,19 @@ Feature: Web User Test Cases
     Examples: | email | password |
     | email | password |
 
+  Scenario Outline: Verify when clicking on Activity summery tab from report dropdown,Activity summery page should get open.
+    Given User should be on login screen.
+    When User fill the valid "<email>"email details on email field.
+    When User fill the valid "<password>"password details on password field.
+    Then User click on submit button.
+    And User click on the report tab.
+    And User click on the activity summery tab.
+    Then Verify the user can see component in the activity summery.
+    Then Verify the user activity summery data mapping with api's.
+    Then Verify the user table activity summery mapping with api's.
+    Examples: | email | password |
+    | email | password |
+
   Scenario Outline: Verify when clicking on Productivity vs Idle tab from report dropdown,Productivity vs Idle page should get open.
     Given User should be on login screen.
     When User fill the valid "<email>"email details on email field.

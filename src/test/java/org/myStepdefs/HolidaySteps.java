@@ -2,10 +2,9 @@ package org.myStepdefs;
 
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
-import org.helpers.endPoints.HolidayEndpoints;
+import org.helpers.endPoints.userEndPointAPIs.HolidayEndpoints;
 import org.pages.MM_HolidayScreen;
 import org.testng.asserts.SoftAssert;
-import org.testng.log4testng.Logger;
 import org.timeUtil.TimeDateClass;
 
 import java.util.LinkedHashMap;

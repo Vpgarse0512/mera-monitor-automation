@@ -2,11 +2,9 @@ package org.myStepdefs;
 
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
-import org.base.BasePage;
-import org.helpers.endPoints.NewTimeTrackerEndPoint;
-import org.helpers.endPoints.ProductivityVsIdleEndPoints;
+import org.helpers.endPoints.userEndPointAPIs.NewTimeTrackerEndPoint;
+import org.helpers.endPoints.userEndPointAPIs.ProductivityVsIdleEndPoints;
 import org.pages.MM_ProductivityIdleScreen;
-import org.pages.MM_TimeClaimStatusScreen;
 import org.testng.asserts.SoftAssert;
 import org.testng.log4testng.Logger;
 import org.timeUtil.TimeDateClass;
@@ -15,7 +13,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 public class ProductiveVsIdleSteps {
-    private static Logger logger = Logger.getLogger(ProductiveVsIdleSteps.class.getName().getClass());
+    private static java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ProductiveVsIdleSteps.class.getName());
+
     int cDate;
 
     @And("User click on the productivity vs idle tab.")
@@ -35,7 +34,6 @@ public class ProductiveVsIdleSteps {
                 for (int i = 0; i < 5; i++) {
                     if (productive.isNoRecordFoundDisplay()) {
                         productive.selectOldDate(cDate, month);
-                        break;
                     }
                     cDate = cDate - 1;
                 }
@@ -66,20 +64,27 @@ public class ProductiveVsIdleSteps {
         MM_ProductivityIdleScreen productive = new MM_ProductivityIdleScreen();
         //soft.assertEquals(productive.getDate(),api.get(""));
         soft.assertEquals(productive.getProductiveTime(), api.get("productiveTime"));
+        System.out.println(productive.getProductiveTime()+" "+api.get("productiveTime"));
         soft.assertEquals(productive.getUnProductiveTime(), api.get("unproductiveTime"));
+        System.out.println(productive.getUnProductiveTime()+" "+api.get("unproductiveTime"));
         soft.assertEquals(productive.getIdleTime(), api.get("idleTime"));
+        System.out.println(productive.getIdleTime()+" "+ api.get("idleTime"));
         soft.assertEquals(productive.getAwayTime(), api.get("awayTime"));
+        System.out.println(productive.getAwayTime()+" "+ api.get("awayTime"));
         soft.assertEquals(productive.getTotalTime(), api.get("totalTime"));
+        System.out.println(productive.getTotalTime()+" "+api.get("totalTime"));
         soft.assertAll();
     }
 
 
     @Then("Verify the user can check the productivity vs idle report for past date.")
     public void verifyTheUserCanCheckTheProductivityVsIdleReportForPastDate() {
+        int day = Integer.parseInt(System.getProperty("day"));
+        String month = System.getProperty("month");
         MM_ProductivityIdleScreen productive = new MM_ProductivityIdleScreen();
         SoftAssert soft = new SoftAssert();
-        HashMap<String, Object> productivity = new ProductivityVsIdleEndPoints().getProductivityVsIdleDetailsMap(3, "January");
-        soft.assertEquals(productive.getDate(), productivity.get("date"));
+        HashMap<String, Object> productivity = new ProductivityVsIdleEndPoints().getProductivityVsIdleDetailsMap(day, month);
+        soft.assertEquals(productive.getDate(), productivity.get("date")+" - ");
         soft.assertEquals(productive.getProductiveTime(), productivity.get("productiveTime"));
         soft.assertEquals(productive.getUnProductiveTime(), productivity.get("unproductiveTime"));
         soft.assertEquals(productive.getIdleTime(), productivity.get("idleTime"));
@@ -144,7 +149,7 @@ public class ProductiveVsIdleSteps {
     @And("User select the particular day and month using calender on claim status.")
     public void userSelectTheParticularDayAndMonthUsingCalenderOnClaimStatus() {
         int day = Integer.parseInt(System.getProperty("day"));
-        String month = System.getProperty("day");
+        String month = System.getProperty("month");
         MM_ProductivityIdleScreen claim = new MM_ProductivityIdleScreen();
         claim.selectOldDate(day, month);
         logger.info("date updated successfully !");

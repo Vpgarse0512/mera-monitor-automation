@@ -1,14 +1,11 @@
-package org.helpers.endPoints;
+package org.helpers.endPoints.userEndPointAPIs;
 
-import freemarker.template.utility.StringUtil;
 import io.restassured.path.json.JsonPath;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.helpers.enums.HttpVerbs;
 import org.helpers.enums.Routes;
-import org.helpers.jsonReader.JsonHelper;
 import org.helpers.restUtil.RestUtils;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.propertyHelper.PropertiesUtils;
 import org.propertyHelper.PropertyFileEnum;

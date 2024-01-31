@@ -2,18 +2,11 @@ package org.myStepdefs;
 
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
-import io.restassured.path.json.JsonPath;
-import org.TestClasses.WebUserTestingClass;
-import org.helpers.endPoints.NewTimeTrackerEndPoint;
-import org.helpers.endPoints.TimeTrackerEndPoints;
-import org.openqa.selenium.WebElement;
-import org.pages.MM_TimeClaimStatusScreen;
+import org.helpers.endPoints.userEndPointAPIs.NewTimeTrackerEndPoint;
 import org.pages.MM_TimeTrackerScreen;
 import org.testng.Assert;
 import org.testng.asserts.SoftAssert;
-import org.testng.log4testng.Logger;
 import org.timeUtil.TimeDateClass;
-import org.utilities.StringUtil;
 
 import java.util.*;
 

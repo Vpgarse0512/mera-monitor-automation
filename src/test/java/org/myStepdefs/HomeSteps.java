@@ -2,12 +2,10 @@ package org.myStepdefs;
 
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
-import org.base.BasePage;
-import org.helpers.endPoints.FiveTilesDataEndPoint;
+import org.helpers.endPoints.userEndPointAPIs.FiveTilesDataEndPoint;
 import org.pages.MM_HomeScreen;
 import org.testng.Assert;
 import org.testng.asserts.SoftAssert;
-import org.testng.log4testng.Logger;
 import org.timeUtil.TimeDateClass;
 
 public class HomeSteps {

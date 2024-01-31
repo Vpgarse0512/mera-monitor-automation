@@ -1,8 +1,7 @@
 package org.myStepdefs;
 
 import io.restassured.path.json.JsonPath;
-import org.base.BasePage;
-import org.helpers.endPoints.TimeTrackerEndPoints;
+import org.helpers.endPoints.userEndPointAPIs.TimeTrackerEndPoints;
 import org.json.simple.parser.ParseException;
 import org.pages.MM_HomeScreen;
 import org.pages.MM_TimeTrackerScreen;
@@ -15,7 +14,7 @@ import org.utilities.StringUtil;
 import java.io.IOException;
 
 public class ReportTabSteps {
-    Logger logger = Logger.getLogger(ReportTabSteps.class);
+    private static java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ReportTabSteps.class.getName());
 
     @Test
     public void validate_user_time_tracker_details() throws InterruptedException, IOException, ParseException {

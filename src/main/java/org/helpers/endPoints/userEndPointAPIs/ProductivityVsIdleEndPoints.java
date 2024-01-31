@@ -1,4 +1,4 @@
-package org.helpers.endPoints;
+package org.helpers.endPoints.userEndPointAPIs;
 
 import io.restassured.path.json.JsonPath;
 import org.apache.logging.log4j.LogManager;
@@ -60,7 +60,7 @@ public class ProductivityVsIdleEndPoints extends RestUtils {
         return jsonPath.getString("message").trim();
     }
 
-    public JsonPath getTotalProductiveHoursByUserDetails(int day,String month) {
+    public JsonPath getTotalProductiveHoursByUserDetails(int day, String month) {
         LOGGER.info("Build request specification for Productivity Vs Idle API.");
         String accessToken = "Bearer " + PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "accessToken");
         LoginEndPoints login = new LoginEndPoints();
@@ -84,24 +84,29 @@ public class ProductivityVsIdleEndPoints extends RestUtils {
 
         return jsonPath;
     }
-    public HashMap<String, Object> getProductivityVsIdleDetailsMap(int day,String month) {
+
+    public HashMap<String, Object> getProductivityVsIdleDetailsMap(int day, String month) {
         HashMap<String, Object> object = new HashMap<>();
-        JsonPath productivity = new ProductivityVsIdleEndPoints().getTotalProductiveHoursByUserDetails(day,month);
-        object.put("name",productivity.getString("userName").toString().replaceAll("\\[","").replaceAll("\\]",""));
-        String productiveTime=TimeDateClass.convertSecondsToHHMMSSFormat(productivity.getString("totalProductiveTime").toString().replaceAll("\\[","").replaceAll("\\]",""));
-        object.put("productiveTime",productiveTime);
-        String unproductiveTime=TimeDateClass.convertSecondsToHHMMSSFormat(productivity.getString("unproductiveTime").toString().replaceAll("\\[","").replaceAll("\\]",""));
-        object.put("unproductiveTime",unproductiveTime);
-        String totalIdleTime=TimeDateClass.convertSecondsToHHMMSSFormat(productivity.getString("totalIdleTime").toString().replaceAll("\\[","").replaceAll("\\]",""));
-        object.put("idleTime",totalIdleTime);
-        String awayTime=TimeDateClass.convertSecondsToHHMMSSFormat(productivity.getString("awayTime").toString().replaceAll("\\[","").replaceAll("\\]",""));
-        object.put("awayTime",awayTime);
-        String totalTime=TimeDateClass.convertSecondsToHHMMSSFormat(productivity.getString("totalTime").toString().replaceAll("\\[","").replaceAll("\\]",""));
-        object.put("totalTime",totalTime);
+        JsonPath productivity = new ProductivityVsIdleEndPoints().getTotalProductiveHoursByUserDetails(day, month);
+        object.put("name", productivity.getString("userName").toString().replaceAll("\\[", "").replaceAll("\\]", ""));
+        String productiveTime = TimeDateClass.convertSecondsToHHMMSSFormat(productivity.getString("totalProductiveTime").toString().replaceAll("\\[", "").replaceAll("\\]", ""));
+        object.put("productiveTime", productiveTime);
+        String unproductiveTime = TimeDateClass.convertSecondsToHHMMSSFormat(productivity.getString("unproductiveTime").toString().replaceAll("\\[", "").replaceAll("\\]", ""));
+        object.put("unproductiveTime", unproductiveTime);
+        String totalIdleTime = TimeDateClass.convertSecondsToHHMMSSFormat(productivity.getString("totalIdleTime").toString().replaceAll("\\[", "").replaceAll("\\]", ""));
+        object.put("idleTime", totalIdleTime);
+        String awayTime = TimeDateClass.convertSecondsToHHMMSSFormat(productivity.getString("awayTime").toString().replaceAll("\\[", "").replaceAll("\\]", ""));
+        object.put("awayTime", awayTime);
+        String totalTime = TimeDateClass.convertSecondsToHHMMSSFormat(productivity.getString("totalTime").toString().replaceAll("\\[", "").replaceAll("\\]", ""));
+        object.put("totalTime", totalTime);
+        String date = (productivity.getString("fromDate").replaceAll("\\[", "").replaceAll("\\]", ""));;
+        object.put("date", TimeDateClass.convertDateFormat(date, "yyyy-MM-dd'T'HH:mm:ss", "dd/MM/yyyy"));
         return object;
     }
+
     public static void main(String[] args) {
         ProductivityVsIdleEndPoints productivity = new ProductivityVsIdleEndPoints();
-        System.out.println(productivity.getProductivityVsIdleDetailsMap(18,"January"));
+        System.out.println(productivity.getTotalProductiveHoursByUserDetails(30, "January").getString(""));
+        System.out.println(productivity.getProductivityVsIdleDetailsMap(30,"January"));
     }
 }

@@ -41,9 +41,9 @@ public class MM_ProductivityIdleScreen extends BaseTest {
     private WebElement idleTime;
     @FindBy(xpath = "(//span[@class=' d-flex mb-1 fs-6 mx-6 justify-content-center'])[1]")
     private WebElement awayTime;
-    @FindBy(xpath = "(//span[@class=' d-flex mb-1 fs-6 mx-6 justify-content-center'])[1]")
+    @FindBy(xpath = "(//span[@class=' d-flex mb-1 fs-6 mx-6 justify-content-center'])[2]")
     private WebElement totalTime;
-    @FindBy(xpath = "//*[@id=\"SvgjsPath2698\"]")
+    @FindBy(xpath = "//*[@id=\"SvgjsG1511\"]")
     private WebElement productiveGreenGraph;
     @FindBy(xpath = "//*[@id=\"SvgjsPath2707\"]")
     private WebElement UnProductiveRedGraph;
@@ -129,8 +129,9 @@ public class MM_ProductivityIdleScreen extends BaseTest {
     }
 
     public void clickOnGreenProductiveGraph() {
-        mouseHover(productiveGreenGraph);
-        clickOnElementUsingActions(productiveGreenGraph);
+       // mouseHover(productiveGreenGraph);
+        sleepTime(1);
+        click(productiveGreenGraph);
     }
 
     public void clickOnRedUnProductiveGraph() {

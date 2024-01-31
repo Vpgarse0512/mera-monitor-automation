@@ -1,4 +1,4 @@
-package org.helpers.endPoints;
+package org.helpers.endPoints.userEndPointAPIs;
 
 import io.restassured.path.json.JsonPath;
 import org.apache.logging.log4j.LogManager;

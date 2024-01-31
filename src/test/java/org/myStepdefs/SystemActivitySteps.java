@@ -2,12 +2,10 @@ package org.myStepdefs;
 
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
-import org.helpers.endPoints.NewTimeTrackerEndPoint;
-import org.helpers.endPoints.SystemActivityEndPoints;
+import org.helpers.endPoints.userEndPointAPIs.NewTimeTrackerEndPoint;
+import org.helpers.endPoints.userEndPointAPIs.SystemActivityEndPoints;
 import org.junit.Assert;
-import org.openqa.selenium.support.ui.Select;
 import org.pages.MM_HomeScreen;
-import org.pages.MM_ScreenshotScreen;
 import org.pages.MM_SystemActivityScreen;
 import org.testng.asserts.SoftAssert;
 import org.testng.log4testng.Logger;
@@ -15,10 +13,10 @@ import org.timeUtil.TimeDateClass;
 
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public class SystemActivitySteps {
-    private static Logger logger = Logger.getLogger(SystemActivitySteps.class.getName().getClass());
+    private static java.util.logging.Logger logger = java.util.logging.Logger.getLogger(SystemActivitySteps.class.getName());
+
     String day;
     String firstActivity;
     int pastDay;
@@ -184,4 +182,5 @@ public class SystemActivitySteps {
         system.selectOldDate(day, month);
         logger.info("user successfully selected mentioned date and month !");
     }
+
 }
