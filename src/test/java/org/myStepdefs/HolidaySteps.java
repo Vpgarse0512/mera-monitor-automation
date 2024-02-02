@@ -2,7 +2,9 @@ package org.myStepdefs;
 
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
+import io.restassured.path.json.JsonPath;
 import org.helpers.endPoints.userEndPointAPIs.HolidayEndpoints;
+import org.helpers.jsonReader.JsonHelper;
 import org.pages.MM_HolidayScreen;
 import org.testng.asserts.SoftAssert;
 import org.timeUtil.TimeDateClass;
@@ -13,7 +15,10 @@ import java.util.Map;
 
 public class HolidaySteps {
     private static java.util.logging.Logger logger = java.util.logging.Logger.getLogger(HolidaySteps.class.getName());
-
+    String email = JsonHelper.getValue("email1").toString();
+    String password = JsonHelper.getValue("password1").toString();
+    String month = JsonHelper.getValue("month").toString();
+    int day = Integer.parseInt(JsonHelper.getValue("day").toString());
     @And("User click on holiday tab.")
     public void userClickOnTimeHolidayTab() {
         MM_HolidayScreen holiday = new MM_HolidayScreen();
@@ -33,12 +38,13 @@ public class HolidaySteps {
     }
 
     @Then("Verify the holiday data with holidays api's.")
-    public void verifyTheHolidayDataWithHolidaysApiS() {
+    public void verifyTheHolidayDataWithHolidaysApiS(int day,String month,String email,String password) {
         MM_HolidayScreen holiday = new MM_HolidayScreen();
         Map<String, List<String>> uiData = holiday.getTableData();
         HolidayEndpoints api = new HolidayEndpoints();
-        int size = api.getHolidayList().getList("").size();
-        LinkedHashMap<String, List<String>> linkList = new HolidayEndpoints().getHolidayData();
+        JsonPath response = api.getHolidayList(day, month, email, password);
+        int size=response.getList("").size();
+        LinkedHashMap<String, List<String>> linkList = new HolidayEndpoints().getHolidayData(day, month, email, password);
         SoftAssert soft = new SoftAssert();
         //String[] list = {"Name", "Date"};
         try {

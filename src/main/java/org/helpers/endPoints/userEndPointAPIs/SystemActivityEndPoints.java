@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.helpers.enums.HttpVerbs;
 import org.helpers.enums.Routes;
+import org.helpers.jsonReader.JsonHelper;
 import org.helpers.restUtil.RestUtils;
 import org.json.simple.parser.ParseException;
 import org.propertyHelper.PropertiesUtils;
@@ -58,16 +59,16 @@ public class SystemActivityEndPoints extends RestUtils {
         return jsonPath.getString("message").trim();
     }
 
-    public JsonPath getSystemActivityDetails(int day) {
+    public JsonPath getSystemActivityDetails(int day,String month,String email,String password) {
         LOGGER.info("Build request specification for system activity API.");
         String accessToken = "Bearer " + PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "accessToken");
         LoginEndPoints login = new LoginEndPoints();
         LinkedHashMap<String, Object> data = null;
         try {
-            data = login.getTheDetailsFromLoginAPI();
+            data = login.getTheDetailsFromLoginAPI(day,month,email,password);
             LinkedHashMap<String, Object> object = new LinkedHashMap<>();
             object.put("userId", data.get("userId"));
-            object.put("date", TimeDateClass.getCustomDateAndTime(day, "00:00:00"));
+            object.put("date", TimeDateClass.getCustomDateAndTime(day, "January"));
             buildRequestSpecForSystemActivityAPI(object, accessToken);
             hitSystemActivityAPI();
             Assert.assertEquals(getAPIResponseCode(), 200);
@@ -81,16 +82,16 @@ public class SystemActivityEndPoints extends RestUtils {
         return jsonPath;
     }
 
-    public LinkedHashMap<String, List<String>> systemActivityRangeOfData(int day, int size, String[] strList) {
+    public LinkedHashMap<String, List<String>> systemActivityRangeOfData(int day,String month,String email,String password ,int size, String[] strList) {
         LinkedHashMap<String, List<String>> allRowsData = new LinkedHashMap<>();
 
         for (String key : strList) {
             List<String> cellData = new java.util.ArrayList<>();
             for (int i = 0; i <= size - 1; i++) {
                 //soft.assertEquals(time.);
-                String data = getSystemActivityDetails(day).getString("captureProcessResponse[" + i + "]."+key);
+                String data = getSystemActivityDetails(day,month,email,password).getString("captureProcessResponse[" + i + "]."+key);
                 if (key=="processName" && data.equals("msedge.exe")){
-                   data = getSystemActivityDetails(day).getString("captureProcessResponse[" + i + "]."+"url");
+                   data = getSystemActivityDetails(day,month,email,password).getString("captureProcessResponse[" + i + "]."+"url");
                 }
                 cellData.add(data);
             }
@@ -99,15 +100,17 @@ public class SystemActivityEndPoints extends RestUtils {
         return allRowsData;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, ParseException {
         SystemActivityEndPoints endpoint = new SystemActivityEndPoints();
-
+        String email = JsonHelper.getValue("email1").toString();
+        String password = JsonHelper.getValue("password1").toString();
+        String month = JsonHelper.getValue("month").toString();
         //int size=endpoint.getSystemActivityDetails().getString("captureProcessResponse[0]");
 
         /*for (int i = 0; i < 10; i++) {
             System.out.println(endpoint.getSystemActivityDetails().getString("captureProcessResponse[" + i + "]"));
         }*/
         String[] str={"processName","titleName","processTotalTimeSeconds","startTime","endTime","url"};
-        System.out.println(endpoint.systemActivityRangeOfData(18,10,str));
+        System.out.println(endpoint.systemActivityRangeOfData(18,month,email,password,10,str));
     }
 }

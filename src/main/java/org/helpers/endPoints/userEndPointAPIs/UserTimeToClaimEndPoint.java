@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.helpers.enums.HttpVerbs;
 import org.helpers.enums.Routes;
+import org.helpers.jsonReader.JsonHelper;
 import org.helpers.restUtil.RestUtils;
 import org.json.simple.parser.ParseException;
 import org.propertyHelper.PropertiesUtils;
@@ -25,9 +26,9 @@ public class UserTimeToClaimEndPoint extends RestUtils {
      *
      * @param payloadObj,cred
      */
-    public void buildRequestSpecForGetUserTimeToClaimAPI(LinkedHashMap<String,Object> payloadObj, Object token) {
-        HashMap<String,Object> accessToken=new HashMap();
-        accessToken.put("Authorization",token); // accessToken
+    public void buildRequestSpecForGetUserTimeToClaimAPI(LinkedHashMap<String, Object> payloadObj, Object token) {
+        HashMap<String, Object> accessToken = new HashMap();
+        accessToken.put("Authorization", token); // accessToken
         LOGGER.info("Building request specification for ClaimTimeForUser API.");
         reqSpec = RestUtils.requestSpecification(payloadObj, accessToken);
     }
@@ -59,17 +60,17 @@ public class UserTimeToClaimEndPoint extends RestUtils {
         return jsonPath.getString("message").trim();
     }
 
-    public JsonPath getUserTimeToClaimDetails(int day)  {
+    public JsonPath getUserTimeToClaimDetails(int day,String month,String email,String password) {
         LOGGER.info("Build request specification for Get User Time To Claim API.");
-        String accessToken = "Bearer "+ PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "accessToken");
-        LoginEndPoints login=new LoginEndPoints();
+        String accessToken = "Bearer " + PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "accessToken");
+        LoginEndPoints login = new LoginEndPoints();
         LinkedHashMap<String, Object> data = null;
         try {
-            data = login.getTheDetailsFromLoginAPI();
-            LinkedHashMap<String,Object> object = new LinkedHashMap<>();
-            object.put("UserId",data.get("userId"));
-            object.put("OrganizationId",data.get("organizationId"));
-            object.put("FromDate", TimeDateClass.getCustomDateAndTime(day,"00:00:00"));
+            data = login.getTheDetailsFromLoginAPI(day,month,email,password);
+            LinkedHashMap<String, Object> object = new LinkedHashMap<>();
+            object.put("UserId", data.get("userId"));
+            object.put("OrganizationId", data.get("organizationId"));
+            object.put("FromDate", TimeDateClass.getCustomDateAndTime(day, month));
             buildRequestSpecForGetUserTimeToClaimAPI(object, accessToken);
             hitGetUserTimeToClaimAPI();
             Assert.assertEquals(getAPIResponseCode(), 200);
@@ -82,21 +83,26 @@ public class UserTimeToClaimEndPoint extends RestUtils {
 
         return jsonPath;
     }
-    public HashMap<String, Object> getTimeClaimMap(int day)
-    {
-        JsonPath claim = getUserTimeToClaimDetails(day);
-        HashMap<String,Object> map=new HashMap<>();
-        map.put("date",TimeDateClass.getCustomDDMMYYYY(day).replaceAll("-","/"));
-        map.put("firstActivity",claim.getString("firstActivity"));
-        map.put("lastActivity",claim.getString("lastActivity"));
-        map.put("totalTime",claim.getString("totalTime"));
-        map.put("productiveTime",claim.getString("totalProductiveTime"));
-        map.put("idleTime",claim.getString("totalIdleTime"));
+
+    public HashMap<String, Object> getTimeClaimMap(int day,String month,String email,String password) {
+        JsonPath claim = getUserTimeToClaimDetails(day,month,email,password);
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("date", TimeDateClass.getCustomDate(day,month).replaceAll("-", "/").split("T")[0]);
+        map.put("firstActivity", claim.getString("firstActivity"));
+        map.put("lastActivity", claim.getString("lastActivity"));
+        map.put("totalTime", claim.getString("totalTime"));
+        map.put("productiveTime", claim.getString("totalProductiveTime"));
+        map.put("idleTime", claim.getString("totalIdleTime"));
         return map;
     }
 
-    public static void main(String[] args) {
-        UserTimeToClaimEndPoint claim=new UserTimeToClaimEndPoint();
-        System.out.println(claim.getTimeClaimMap(16));
+    public static void main(String[] args) throws IOException, ParseException {
+        UserTimeToClaimEndPoint claim = new UserTimeToClaimEndPoint();
+        String email = JsonHelper.getValue("email1").toString();
+        String password = JsonHelper.getValue("password1").toString();
+        String month = JsonHelper.getValue("month").toString();
+        //System.out.println(email +" "+password);
+        System.out.println(claim.getUserTimeToClaimDetails(16,month,email,password).getString(""));
+        System.out.println(claim.getTimeClaimMap(16,month,email,password));
     }
 }

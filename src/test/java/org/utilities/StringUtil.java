@@ -1,7 +1,6 @@
 package org.utilities;
 
-import org.json.simple.parser.ParseException;
-
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -17,23 +16,28 @@ public class StringUtil {
 
         return sb.replace(startIndex,endIndex,"").toString();
     }
-    public static String extractTime(String dateTimeString) {
+    public static String extractTime(String dateTimeString) throws ParseException {
 
-        // Specify the input date format
-        SimpleDateFormat inputFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+    SimpleDateFormat inputFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+    SimpleDateFormat outputFormat = new SimpleDateFormat("hh:mm");
 
-        // Specify the output time format
-        SimpleDateFormat outputFormat = new SimpleDateFormat("hh:mm");
+    Date date = inputFormat.parse(dateTimeString);
+    String time = outputFormat.format(date);
 
-        try {
-            // Parse the input date-time string
-            Date date = inputFormat.parse(dateTimeString);
-
-            // Format the date to get only the time part
-            return outputFormat.format(date);
-        } catch (java.text.ParseException e) {
-            throw new RuntimeException(e);
+        if (dateTimeString.contains("PM")) {
+        // Convert to 24-hour format if PM
+        String[] parts = time.split(":");
+        int hours = Integer.parseInt(parts[0]);
+        if (hours != 12) {
+            hours += 12;
+            time = hours + ":" + parts[1];
         }
+    } else if (dateTimeString.contains("AM") && time.startsWith("12")) {
+        // Handle special case: 12:xx AM should be converted to 00:xx
+        time = "00:" + time.substring(3);
     }
+
+        return time;
+}
 
 }

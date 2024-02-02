@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.helpers.enums.HttpVerbs;
 import org.helpers.enums.Routes;
+import org.helpers.jsonReader.JsonHelper;
 import org.helpers.restUtil.RestUtils;
 import org.json.simple.parser.ParseException;
 import org.propertyHelper.PropertiesUtils;
@@ -59,16 +60,16 @@ public class TimeTrackerEndPoints extends RestUtils {
         return jsonPath.getString("message").trim();
     }
 
-    public JsonPath getTimeTrackerDetails(int day)  {
+    public JsonPath getTimeTrackerDetails(int day,String month,String email,String password)  {
         LOGGER.info("Build request specification for Download time tracker report API.");
         String accessToken = "Bearer "+PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "accessToken");
         LoginEndPoints login=new LoginEndPoints();
         LinkedHashMap<String, Object> data = null;
         try {
-            data = login.getTheDetailsFromLoginAPI();
+            data = login.getTheDetailsFromLoginAPI(day,month,email,password);
             LinkedHashMap<String,Object> object = new LinkedHashMap<>();
-            object.put("fromDate",TimeDateClass.getCustomDateAndTime(day,"00:00:00"));
-            object.put("toDate",TimeDateClass.getCustomDateAndTime(day,"00:00:00"));
+            object.put("fromDate",TimeDateClass.getCustomDateAndTime(day,"January"));
+            object.put("toDate",TimeDateClass.getCustomDateAndTime(day,"January"));
             object.put("organizationId",data.get("organizationId"));
             object.put("userType",PropertiesUtils.getProperty(PropertyFileEnum.CREAD,"userType"));
             object.put("userId",data.get("userId"));
@@ -103,8 +104,8 @@ public class TimeTrackerEndPoints extends RestUtils {
             "department": "Human Resource",
             "timeZone": "IST(UTC+05:30)"
     }*/
-    public void getTimeTrackerDataFromAPI() throws IOException, ParseException {
-        JsonPath details = getTimeTrackerDetails(3);
+    public void getTimeTrackerDataFromAPI(int day,String month,String email,String password){
+        JsonPath details = getTimeTrackerDetails(day,month,email,password);
         HashMap map=new HashMap();
         map.put("employeeName",details.getString("[1].employeeName"));
         map.put("reportDate",TimeDateClass.convertDateFormat(details.getString("date"),"d/m/yyyy","dd-MM-yyyy"));
@@ -124,9 +125,12 @@ public class TimeTrackerEndPoints extends RestUtils {
     }
 
 
-    public static void main(String[] args)  {
+    public static void main(String[] args) throws IOException, ParseException {
         TimeTrackerEndPoints tracker=new TimeTrackerEndPoints();
-        JsonPath path = tracker.getTimeTrackerDetails(3);
+        String email = JsonHelper.getValue("email1").toString();
+        String password = JsonHelper.getValue("password1").toString();
+        String month = JsonHelper.getValue("month").toString();
+        JsonPath path = tracker.getTimeTrackerDetails(16,month,email,password);
         System.out.println(path.getString(""));
     }
 

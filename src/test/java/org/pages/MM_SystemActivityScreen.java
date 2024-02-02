@@ -119,8 +119,8 @@ public void clickOnNextButton()
         LinkedHashMap<String, List<String>> allRowsData = new LinkedHashMap<>();
         List<WebElement> headerCells = table.findElements(By.tagName("th"));
         List<String> headerNames = extractCellText(headerCells);
-
-        for (int i = 1; i < headerNames.size(); i++) {
+        int size= headerNames.size();
+        for (int i = 1; i < size; i++) {
             List<WebElement> columnCells = table.findElements(By.xpath(".//td[" + (i + 1) + "]"));
             List<String> columnData = extractCellText(columnCells);
             allRowsData.put(headerNames.get(i), columnData);

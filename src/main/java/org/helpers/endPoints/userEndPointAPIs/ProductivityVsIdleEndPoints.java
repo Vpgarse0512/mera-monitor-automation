@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.helpers.enums.HttpVerbs;
 import org.helpers.enums.Routes;
+import org.helpers.jsonReader.JsonHelper;
 import org.helpers.restUtil.RestUtils;
 import org.json.simple.parser.ParseException;
 import org.propertyHelper.PropertiesUtils;
@@ -60,13 +61,13 @@ public class ProductivityVsIdleEndPoints extends RestUtils {
         return jsonPath.getString("message").trim();
     }
 
-    public JsonPath getTotalProductiveHoursByUserDetails(int day, String month) {
+    public JsonPath getTotalProductiveHoursByUserDetails(int day, String month,String email,String password) {
         LOGGER.info("Build request specification for Productivity Vs Idle API.");
         String accessToken = "Bearer " + PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "accessToken");
         LoginEndPoints login = new LoginEndPoints();
         LinkedHashMap<String, Object> data = null;
         try {
-            data = login.getTheDetailsFromLoginAPI();
+            data = login.getTheDetailsFromLoginAPI(day,month,email,password);
             LinkedHashMap<String, Object> object = new LinkedHashMap<>();
             object.put("userId", data.get("userId"));
             object.put("organizationId", data.get("organizationId"));
@@ -85,9 +86,9 @@ public class ProductivityVsIdleEndPoints extends RestUtils {
         return jsonPath;
     }
 
-    public HashMap<String, Object> getProductivityVsIdleDetailsMap(int day, String month) {
+    public HashMap<String, Object> getProductivityVsIdleDetailsMap(int day, String month,String email,String password) {
         HashMap<String, Object> object = new HashMap<>();
-        JsonPath productivity = new ProductivityVsIdleEndPoints().getTotalProductiveHoursByUserDetails(day, month);
+        JsonPath productivity = new ProductivityVsIdleEndPoints().getTotalProductiveHoursByUserDetails(day, month,email,password);
         object.put("name", productivity.getString("userName").toString().replaceAll("\\[", "").replaceAll("\\]", ""));
         String productiveTime = TimeDateClass.convertSecondsToHHMMSSFormat(productivity.getString("totalProductiveTime").toString().replaceAll("\\[", "").replaceAll("\\]", ""));
         object.put("productiveTime", productiveTime);
@@ -104,9 +105,12 @@ public class ProductivityVsIdleEndPoints extends RestUtils {
         return object;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, ParseException {
+        String email = JsonHelper.getValue("email1").toString();
+        String password = JsonHelper.getValue("password1").toString();
+        String month = JsonHelper.getValue("month").toString();
         ProductivityVsIdleEndPoints productivity = new ProductivityVsIdleEndPoints();
-        System.out.println(productivity.getTotalProductiveHoursByUserDetails(30, "January").getString(""));
-        System.out.println(productivity.getProductivityVsIdleDetailsMap(30,"January"));
+        System.out.println(productivity.getTotalProductiveHoursByUserDetails(30, month,email,password).getString(""));
+        System.out.println(productivity.getProductivityVsIdleDetailsMap(30,month,email,password));
     }
 }

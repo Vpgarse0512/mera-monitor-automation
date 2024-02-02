@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.helpers.enums.HttpVerbs;
 import org.helpers.enums.Routes;
+import org.helpers.jsonReader.JsonHelper;
 import org.helpers.restUtil.RestUtils;
 import org.json.simple.parser.ParseException;
 import org.propertyHelper.PropertiesUtils;
@@ -59,13 +60,13 @@ public class ClaimTimeForUserStatusEndPoints extends RestUtils{
         return jsonPath.getString("message").trim();
     }
 
-    public JsonPath getTimeTrackerDetails(int day,String month)  {
+    public JsonPath getTimeTrackerDetails(int day,String month,String email,String password)  {
         LOGGER.info("Build request specification for Download time tracker report API.");
         String accessToken = "Bearer "+ PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "accessToken");
         LoginEndPoints login=new LoginEndPoints();
         LinkedHashMap<String, Object> data = null;
         try {
-            data = login.getTheDetailsFromLoginAPI();
+            data = login.getTheDetailsFromLoginAPI(day,month,email,password);
             LinkedHashMap<String,Object> object = new LinkedHashMap<>();
             object.put("fromDate", TimeDateClass.getCustomDate(day,month));
             object.put("toDate",TimeDateClass.getCustomDate(day,month));
@@ -84,9 +85,9 @@ public class ClaimTimeForUserStatusEndPoints extends RestUtils{
 
         return jsonPath;
     }
-    public LinkedHashMap getClaimData(int day,String month)
+    public LinkedHashMap getClaimData(int day,String month,String email,String password)
     {
-        JsonPath claim = getTimeTrackerDetails(day,month);
+        JsonPath claim = getTimeTrackerDetails(day,month,email,password);
         LinkedHashMap map=new LinkedHashMap();
         map.put("timeClaimId",claim.getString("timeClaimId").replaceAll("\\[","").replaceAll("\\]",""));
         map.put("userName",claim.getString("userName").replaceAll("\\[","").replaceAll("\\]",""));
@@ -102,10 +103,13 @@ public class ClaimTimeForUserStatusEndPoints extends RestUtils{
 
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, ParseException {
+        String email = JsonHelper.getValue("email1").toString();
+        String password = JsonHelper.getValue("password1").toString();
+        String month = JsonHelper.getValue("month").toString();
         ClaimTimeForUserStatusEndPoints claim=new ClaimTimeForUserStatusEndPoints();
         //System.out.println(StringUtil.extractTime(claim.getClaimData(3).get("toTime")));
         //System.out.println(claim.getTimeTrackerDetails(3,"january").getString(""));
-        System.out.println(claim.getClaimData(16,"January"));
+        System.out.println(claim.getClaimData(16,month,email,password));
     }
 }

@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.helpers.enums.HttpVerbs;
 import org.helpers.enums.Routes;
+import org.helpers.jsonReader.JsonHelper;
 import org.helpers.restUtil.RestUtils;
 import org.json.simple.parser.ParseException;
 import org.propertyHelper.PropertiesUtils;
@@ -64,22 +65,16 @@ public class WebAndAppsEndPoints extends RestUtils {
         String accessToken = "Bearer " + PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "accessToken");
         LoginEndPoints login = new LoginEndPoints();
         LinkedHashMap<String, Object> data = null;
-        try {
-            data = login.getTheDetailsFromLoginAPI();
-            LinkedHashMap<String, Object> object = new LinkedHashMap<>();
-            object.put("userId", data.get("userId"));
-            object.put("organizationId", data.get("organizationId"));
-            object.put("fromDate", TimeDateClass.getCustomDateAndTime(03, "00:00:00"));
-            object.put("toDate", TimeDateClass.getCustomDateAndTime(03, "00:00:00"));
-            buildRequestSpecForWebAndAppsAPI(object, accessToken);
-            hitWebAndAppsAPI();
-            Assert.assertEquals(getAPIResponseCode(), 200);
-            //Assert.assertEquals(getLoginAPIResponseMessage(), "Login Successful");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+        //data = login.getTheDetailsFromLoginAPI((String) JsonHelper.getValue("email1"), (String) JsonHelper.getValue("password1"));
+        LinkedHashMap<String, Object> object = new LinkedHashMap<>();
+        object.put("userId", data.get("userId"));
+        object.put("organizationId", data.get("organizationId"));
+        object.put("fromDate", TimeDateClass.getCustomDateAndTime(03, "January"));
+        object.put("toDate", TimeDateClass.getCustomDateAndTime(03, "January"));
+        buildRequestSpecForWebAndAppsAPI(object, accessToken);
+        hitWebAndAppsAPI();
+        Assert.assertEquals(getAPIResponseCode(), 200);
+        //Assert.assertEquals(getLoginAPIResponseMessage(), "Login Successful");
 
         return jsonPath;
     }
@@ -97,9 +92,12 @@ public class WebAndAppsEndPoints extends RestUtils {
         return ;
     }*/
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, ParseException {
         WebAndAppsEndPoints webapps = new WebAndAppsEndPoints();
         //System.out.println(webapps.getGetWebAndAppsDetails().);
+        String email = JsonHelper.getValue("email1").toString();
+        String password = JsonHelper.getValue("password1").toString();
+        String month = JsonHelper.getValue("month").toString();
         System.out.println(webapps.getWebSiteURL(0).get("url"));
         System.out.println(webapps.getWebSiteURL(0).get("totalTime"));
     }

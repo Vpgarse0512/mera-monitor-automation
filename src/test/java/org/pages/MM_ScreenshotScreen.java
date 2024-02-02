@@ -115,12 +115,12 @@ public class MM_ScreenshotScreen extends BaseTest {
     {
         click(screenShotTitle);
     }
-    public void verifyScreenshotsOnScreenshotScreen()
+    public void verifyScreenshotsOnScreenshotScreen(String date,int day,String month,String email,String password)
     {
         logger.info("Screenshot taken for the user is 'Count :'"+getScreenshotMaxCount());
         sleepTime(2);
         SoftAssert soft=new SoftAssert();
-        LinkedHashMap<String, ArrayList<String>> api = new ScreenshotEndPoint().getScreenShotStamp(TimeDateClass.getTodaysDate());
+        LinkedHashMap<String, ArrayList<String>> api = new ScreenshotEndPoint().getScreenShotStamp(date,day,month,email,password);
         int i=0;
         scrollToElement(nextSlid);
         //while (i<=getScreenshotMaxCount()-1)
@@ -128,8 +128,9 @@ public class MM_ScreenshotScreen extends BaseTest {
         {
             int j=i+1;
             String time=driver.findElement(By.xpath("(//span[@class='image-gallery-description'])["+j+"]")).getText();
-            System.out.println(time+"   "+api.get("timeStamp").get(i).replace(".",":"));
-            soft.assertTrue(time.contains(api.get("timeStamp").get(i)));
+            String[] modifiedTime = time.split(" ")[2].split(":");
+            //System.out.println(modifiedTime[0]+":"+modifiedTime[1]+"   "+api.get("timeStamp").get(i).replace(".",":"));
+            soft.assertEquals(modifiedTime[0]+"."+modifiedTime[1],api.get("timeStamp").get(i));
             //Assert.assertEquals(time,);
             sleepTime(1);
             clickOnNext();

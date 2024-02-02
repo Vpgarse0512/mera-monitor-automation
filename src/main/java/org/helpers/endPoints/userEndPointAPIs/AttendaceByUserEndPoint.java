@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.helpers.enums.HttpVerbs;
 import org.helpers.enums.Routes;
+import org.helpers.jsonReader.JsonHelper;
 import org.helpers.restUtil.RestUtils;
 import org.json.simple.parser.ParseException;
 import org.propertyHelper.PropertiesUtils;
@@ -60,17 +61,17 @@ public class AttendaceByUserEndPoint extends RestUtils {
         return jsonPath.getString("message").trim();
     }
 
-    public JsonPath getAttendanceDetails(int day) {
+    public JsonPath getAttendanceDetails(int day,String month,String email,String password) {
         LOGGER.info("Build request specification for Attendance Report By Report Manager API.");
         String accessToken = "Bearer " + PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "accessToken");
         LoginEndPoints login = new LoginEndPoints();
         LinkedHashMap<String, Object> data = null;
         try {
-            data = login.getTheDetailsFromLoginAPI();
+            data = login.getTheDetailsFromLoginAPI(day,month,email,password);
             LinkedHashMap<String, Object> object = new LinkedHashMap<>();
             object.put("userId", data.get("userId"));
-            object.put("fromDate", TimeDateClass.getCustomDateAndTime(day, "00:00:00"));
-            object.put("toDate", TimeDateClass.getCustomDateAndTime(day, "00:00:00"));
+            object.put("fromDate", TimeDateClass.getCustomDateAndTime(day, month));
+            object.put("toDate", TimeDateClass.getCustomDateAndTime(day, month));
             object.put("organizationId", data.get("organizationId"));
             buildRequestSpecForAttendanceAPI(object, accessToken);
             hitAttendanceAPI();
@@ -85,9 +86,9 @@ public class AttendaceByUserEndPoint extends RestUtils {
         return jsonPath;
     }
 
-    public Map<String, Object> getInOutTotalTime(int day) {
+    public Map<String, Object> getInOutTotalTime(int day,String month,String email,String password) {
         Map<String, Object> map = new LinkedHashMap();
-        JsonPath aatendance = new AttendaceByUserEndPoint().getAttendanceDetails(day);
+        JsonPath aatendance = new AttendaceByUserEndPoint().getAttendanceDetails(day,month,email,password);
         map.put("In", aatendance.getString("[0].title"));
         map.put("Out", aatendance.getString("[1].title"));
         map.put("Total", aatendance.getString("[2].title"));
@@ -95,9 +96,12 @@ public class AttendaceByUserEndPoint extends RestUtils {
         return map;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, ParseException {
         AttendaceByUserEndPoint aatendance = new AttendaceByUserEndPoint();
-        System.out.println(aatendance.getAttendanceDetails(16).getString(""));
-        System.out.println(aatendance.getInOutTotalTime(16));
+        String email = JsonHelper.getValue("email1").toString();
+        String password = JsonHelper.getValue("password1").toString();
+        String month = JsonHelper.getValue("month").toString();
+        System.out.println(aatendance.getAttendanceDetails(16,month,email,password).getString(""));
+        System.out.println(aatendance.getInOutTotalTime(16,month,email,password));
     }
 }

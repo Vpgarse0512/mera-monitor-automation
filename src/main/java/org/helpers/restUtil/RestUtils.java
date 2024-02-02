@@ -49,6 +49,21 @@ public class RestUtils {
                 .body(body);
         return reqSpec;
     }
+    public static RequestSpecification requestSpecification(Map<String, ?> body) {
+        RequestSpecification reqSpec;
+        PrintStream log = null;
+        try {
+            log = new PrintStream(new FileOutputStream("logs/api_logs.txt"));
+        } catch (IOException e) {
+            LOGGER.info(e);
+        }
+        reqSpec = RestAssured.given()
+                .baseUri(ResourcePath.QA_BASE_URI)
+                .contentType(ContentType.JSON)
+
+                .body(body);
+        return reqSpec;
+    }
     public static RequestSpecification requestSpecification (LinkedHashMap<String, Object> queryParams, Map<String, ?> token) {
         RequestSpecification reqSpec;
         PrintStream log = null;

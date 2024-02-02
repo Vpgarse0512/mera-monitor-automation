@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.helpers.enums.HttpVerbs;
 import org.helpers.enums.Routes;
+import org.helpers.jsonReader.JsonHelper;
 import org.helpers.restUtil.RestUtils;
 import org.json.simple.parser.ParseException;
 import org.propertyHelper.PropertiesUtils;
@@ -60,13 +61,13 @@ public class HolidayEndpoints extends RestUtils {
         return jsonPath.getString("message").trim();
     }
 
-    public JsonPath getHolidayList() {
+    public JsonPath getHolidayList(int day,String month,String email,String password) {
         LOGGER.info("Build request specification for Get User Time To Claim API.");
         String accessToken = "Bearer " + PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "accessToken");
         LoginEndPoints login = new LoginEndPoints();
         LinkedHashMap<String, Object> data = null;
         try {
-            data = login.getTheDetailsFromLoginAPI();
+            data = login.getTheDetailsFromLoginAPI(day,month,email,password);
             LinkedHashMap<String, Object> object = new LinkedHashMap<>();
             object.put("organizationId", data.get("organizationId"));
             object.put("currentDate", TimeDateClass.getTodaysDate());
@@ -81,9 +82,9 @@ public class HolidayEndpoints extends RestUtils {
         return jsonPath;
     }
 
-    public LinkedHashMap<String, List<String>> getHolidayData() {
-        JsonPath holiday = getHolidayList();
-        int size = getHolidayList().getList("").size();
+    public LinkedHashMap<String, List<String>> getHolidayData(int day,String month,String email,String password) {
+        JsonPath holiday = getHolidayList(day,month,email,password);
+        int size = holiday.getList("").size();
         //System.out.println(size);
         LinkedHashMap<String, List<String>> map = new LinkedHashMap<>();
         String[] list = {"holidayName", "holidayDate"};
@@ -99,9 +100,12 @@ public class HolidayEndpoints extends RestUtils {
         return map;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, ParseException {
+        String email = JsonHelper.getValue("email1").toString();
+        String password = JsonHelper.getValue("password1").toString();
+        String month = JsonHelper.getValue("month").toString();
         HolidayEndpoints holiday = new HolidayEndpoints();
         //System.out.println(holiday.getHolidayList().getString(""));
-        System.out.println(holiday.getHolidayData());
+        System.out.println(holiday.getHolidayData(16,month,email,password));
     }
 }

@@ -4,6 +4,7 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import org.helpers.endPoints.userEndPointAPIs.ClaimTimeForUserStatusEndPoints;
 import org.helpers.endPoints.userEndPointAPIs.UserTimeToClaimEndPoint;
+import org.helpers.jsonReader.JsonHelper;
 import org.pages.MM_TimeClaimScreen;
 import org.pages.MM_TimeClaimStatusScreen;
 import org.testng.asserts.SoftAssert;
@@ -11,11 +12,16 @@ import org.testng.log4testng.Logger;
 import org.timeUtil.TimeDateClass;
 import org.utilities.StringUtil;
 
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 public class TimeClaimSteps {
     private static java.util.logging.Logger logger = java.util.logging.Logger.getLogger(TimeClaimSteps.class.getName());
+    String email = JsonHelper.getValue("email1").toString();
+    String password = JsonHelper.getValue("password1").toString();
+    String month = JsonHelper.getValue("month").toString();
+    int day = Integer.parseInt(JsonHelper.getValue("day").toString());
     @And("User click on time claim tab.")
     public void userClickOnTimeClaimTab() {
         MM_TimeClaimScreen timeClaim = new MM_TimeClaimScreen();
@@ -53,12 +59,12 @@ public class TimeClaimSteps {
     }
 
     @Then("Verify the time claim activity times with api's.")
-    public void verifyTheTimeClaimActivityTimesWithApiS(int day,String month) {
-        // API validation pending 
+    public void verifyTheTimeClaimActivityTimesWithApiS(int day,String month,String email,String password) {
+        // API validation pending
         MM_TimeClaimScreen timeClaim = new MM_TimeClaimScreen();
-        HashMap<String, Object> claimApi = new UserTimeToClaimEndPoint().getTimeClaimMap(day);
+        HashMap<String, Object> claimApi = new UserTimeToClaimEndPoint().getTimeClaimMap(day,month,email,password);
         SoftAssert soft = new SoftAssert();
-        soft.assertEquals(timeClaim.getDate(), claimApi.get("date"));
+        soft.assertEquals(timeClaim.getDate(), TimeDateClass.convertDateFormat(claimApi.get("date").toString(),"yyyy/MM/dd","dd/MM/yyyy"));
         String[] firstActivity = claimApi.get("firstActivity").toString().split(" ");
         soft.assertTrue(timeClaim.getFirstActivity().contains(firstActivity[1]+" "+firstActivity[2]));
         String[] lastActivity = claimApi.get("lastActivity").toString().split(" ");
@@ -114,15 +120,14 @@ public class TimeClaimSteps {
     }
 
     @Then("Verify the time claims status record and status with api's.")
-    public void verifyTheTimeClaimsStatusRecordAndStatusWithApiS() {
-        int day=Integer.parseInt(System.getProperty("day"));
-        String month=System.getProperty("month");
-        LinkedHashMap claim = new ClaimTimeForUserStatusEndPoints().getClaimData(day,month);
+    public void verifyTheTimeClaimsStatusRecordAndStatusWithApiS(int day,String month,String email,String password) throws ParseException {
+        LinkedHashMap claim = new ClaimTimeForUserStatusEndPoints().getClaimData(day,month,email,password);
         MM_TimeClaimStatusScreen status = new MM_TimeClaimStatusScreen();
         SoftAssert soft = new SoftAssert();
         soft.assertEquals(status.getUserName(), claim.get("userName"));
         soft.assertEquals(status.getClaimDate(), TimeDateClass.convertDateFormat(claim.get("recordDate").toString(),"yyyy-MM-dd", "dd/MM/yyyy"));
         soft.assertEquals(status.getStartTime(), StringUtil.extractTime(claim.get("fromTime").toString()));
+        //System.out.println(status.getStartTime()+"   "+StringUtil.extractTime(claim.get("fromTime").toString()));
         soft.assertEquals(status.getEndTime(), StringUtil.extractTime(claim.get("toTime").toString()));
         soft.assertEquals(status.getReason(), claim.get("reason"));
         soft.assertEquals(status.getApprovedBy(), claim.get("responseBy"));

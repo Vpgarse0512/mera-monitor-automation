@@ -92,6 +92,9 @@ public class MM_AttendanceScreen extends BaseTest {
     public String getDate() {
         return getText(date);
     }
+    public  int getTodayDate(){
+        return Integer.parseInt(getText(date).trim().split("/")[0]);
+    }
 
     public String getLoggedHours() {
         return getText(loggedHours);

@@ -4,6 +4,7 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import org.helpers.endPoints.userEndPointAPIs.NewTimeTrackerEndPoint;
 import org.helpers.endPoints.userEndPointAPIs.SystemActivityEndPoints;
+import org.helpers.jsonReader.JsonHelper;
 import org.junit.Assert;
 import org.pages.MM_HomeScreen;
 import org.pages.MM_SystemActivityScreen;
@@ -18,8 +19,12 @@ public class SystemActivitySteps {
     private static java.util.logging.Logger logger = java.util.logging.Logger.getLogger(SystemActivitySteps.class.getName());
 
     String day;
-    String firstActivity;
+    String firstActivityTime;
     int pastDay;
+    String email = JsonHelper.getValue("email1").toString();
+    String password = JsonHelper.getValue("password1").toString();
+    String month = JsonHelper.getValue("month").toString();
+    int days = Integer.parseInt(JsonHelper.getValue("day").toString());
 
     @And("User click on the system activity tab.")
     public void userClickOnTheSystemActivityTab() {
@@ -49,7 +54,7 @@ public class SystemActivitySteps {
 
 
     @Then("Verify user should able to see current date all used url & App when loading the page first time.")
-    public void verifyUserShouldAbleToSeeCurrentDateAllUsedUrlAppWhenLoadingThePageFirstTime() {
+    public void verifyUserShouldAbleToSeeCurrentDateAllUsedUrlAppWhenLoadingThePageFirstTime(int currentDate,String currentMonth,String email,String password) {
         try {
             SoftAssert soft = new SoftAssert();
             String[] str = {"processName", "titleName", "processTotalTimeSeconds", "startTime", "endTime", "url"};
@@ -57,7 +62,7 @@ public class SystemActivitySteps {
             SystemActivityEndPoints system = new SystemActivityEndPoints();
             // int size = Integer.parseInt(activity.getRangeCount());
             int size = 10;
-            LinkedHashMap<String, List<String>> systemActivityData = system.systemActivityRangeOfData(Integer.parseInt(day), size, str);
+            LinkedHashMap<String, List<String>> systemActivityData = system.systemActivityRangeOfData(currentDate,currentMonth,email,password, size, str);
             LinkedHashMap<String, List<String>> allData = activity.getTableData();
             /*System.out.println(systemActivityData);
             System.out.println(allData);*/
@@ -85,17 +90,17 @@ public class SystemActivitySteps {
     }
 
     @Then("Verify that first activity of the user should have start time as day start time.")
-    public void verifyThatFirstActivityOfTheUserShouldHaveStartTimeAsDayStartTime() {
+    public void verifyThatFirstActivityOfTheUserShouldHaveStartTimeAsDayStartTime(int currentDay,String currentMonth,String email,String password) {
         SoftAssert soft = new SoftAssert();
-        NewTimeTrackerEndPoint firstActivity = new NewTimeTrackerEndPoint();
+        LinkedHashMap<String, Object> firstActivity = new NewTimeTrackerEndPoint().getTimeTrackerMapData(currentDay, currentMonth, email, password);
         MM_SystemActivityScreen systemActivity = new MM_SystemActivityScreen();
-        soft.assertEquals(systemActivity.getFirstSystemActivityTime(), firstActivity.getTimeTrackerMapData(Integer.parseInt(day)).get("firstActivity").toString().split(" ")[0]);
+        soft.assertEquals(systemActivity.getFirstSystemActivityTime(), firstActivity.get("firstActivity").toString().split(" ")[0]);
         soft.assertAll();
 
     }
 
     @Then("Verify that Time spent on any activity should be the difference between next Activity start time and that particular Activity start time.")
-    public void verifyThatTimeSpentOnAnyActivityShouldBeTheDifferenceBetweenNextActivityStartTimeAndThatParticularActivityStartTime() {
+    public void verifyThatTimeSpentOnAnyActivityShouldBeTheDifferenceBetweenNextActivityStartTimeAndThatParticularActivityStartTime(int day,String month,String email,String password ) {
         try {
             SystemActivityEndPoints system = new SystemActivityEndPoints();
             MM_SystemActivityScreen steps = new MM_SystemActivityScreen();
@@ -103,7 +108,7 @@ public class SystemActivitySteps {
             int size = 10;
             String firstActivityTime = steps.getFirstSystemActivityTime();
             String[] str = {"processName", "titleName", "processTotalTimeSeconds", "startTime", "endTime", "url"};
-            LinkedHashMap<String, List<String>> processTime = system.systemActivityRangeOfData(Integer.parseInt(day), size, str);
+            LinkedHashMap<String, List<String>> processTime = system.systemActivityRangeOfData(day,month,email,password, size, str);
             LinkedHashMap<String, List<String>> startTime = steps.getTableData();
             for (int i = 0; i <= size - 1; i++) {
                 String seconds = processTime.get("processTotalTimeSeconds").get(i);
@@ -131,7 +136,7 @@ public class SystemActivitySteps {
     }
 
     @Then("Verify activities of the past day with api's.")
-    public void verifyActivitiesOfThePastDayWithApiS() {
+    public void verifyActivitiesOfThePastDayWithApiS(int pastDay,String month,String email,String password) {
 
         try {
             SoftAssert soft = new SoftAssert();
@@ -141,7 +146,7 @@ public class SystemActivitySteps {
             SystemActivityEndPoints system = new SystemActivityEndPoints();
             // int size = Integer.parseInt(activity.getRangeCount());
             int size = 10;
-            LinkedHashMap<String, List<String>> systemActivityData = system.systemActivityRangeOfData(pastDay, size, str);
+            LinkedHashMap<String, List<String>> systemActivityData = system.systemActivityRangeOfData(pastDay,month,email,password,size, str);
             LinkedHashMap<String, List<String>> allData = activity.getTableData();
             //System.out.println(systemActivityData);
             //System.out.println(allData);

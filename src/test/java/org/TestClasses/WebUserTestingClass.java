@@ -1,25 +1,37 @@
 package org.TestClasses;
 
 import org.base.BasePage;
+import org.helpers.jsonReader.JsonHelper;
+import org.json.simple.parser.ParseException;
 import org.myStepdefs.*;
 import org.pages.*;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import org.testng.log4testng.Logger;
+import org.timeUtil.TimeDateClass;
+
+import java.io.IOException;
 
 public class WebUserTestingClass extends BasePage {
     private static java.util.logging.Logger logger = java.util.logging.Logger.getLogger(WebUserTestingClass.class.getName());
 
+    int todayDate= TimeDateClass.getDayOfMonth();
+    String currentMonth=TimeDateClass.getMonthAsString();
+
     //Done Successfully
     @Test(description = "method is to test invalid error message on login page when user" +
             "filling invalid details.", priority = 0)
-    public void testLoginFunctionalityWithInvalidUser() {
+    public void testLoginFunctionalityWithInvalidUser() throws IOException, ParseException {
+        int day = Integer.parseInt(System.getProperty("day"));
+        String month = System.getProperty("month");
+        String invalidEmail = System.getProperty("invalidEmail");
+        String invalidPassword = System.getProperty("invalidPassword");
         LoginSteps lSteps = new LoginSteps();
         lSteps.userShouldBeOnLoginScreen();
         lSteps.userFillTheInvalidEmailDetailsOnEmailField("invalidEmail");
         lSteps.userFillTheInvalidPasswordDetailsOnPasswordField("invalidPassword");
         lSteps.userClickOnSubmitButton();
-        lSteps.theErrorValidationMessagesOnEmailDisplaySuccessfully();
+        lSteps.theErrorValidationMessagesOnEmailDisplaySuccessfully(day,month,invalidEmail,invalidPassword);
         lSteps.userClearTheTextFromEmailIdAndPasswordField();
         logger.info("TC_01 :" + " Verify user should not be able to login with invalid credentials!");
     }
@@ -42,6 +54,10 @@ public class WebUserTestingClass extends BasePage {
     //Done Successfully
     @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 2)
     public void testHomeDashboardVisibility() {
+        int day = Integer.parseInt(System.getProperty("day"));
+        String month = System.getProperty("month");
+        String email = System.getProperty("email");
+        String password = System.getProperty("password");
         HomeSteps homeS = new HomeSteps();
         homeS.verifyUserShouldBeSeenAllOptionsOnLeftSide();
         logger.info("TC_05 :" + "Verify all 5 tiles are showing on the Dasboard page !");
@@ -70,6 +86,12 @@ public class WebUserTestingClass extends BasePage {
     // Done Successfully
     @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 3)
     public void testTimeTrackerFunctionality() {
+        //int day = Integer.parseInt(System.getProperty("day"));
+        //String month = System.getProperty("month");
+        int day=01;
+        String month="February";
+        String email = System.getProperty("email");
+        String password = System.getProperty("password");
         HomeSteps homeS = new HomeSteps();
         homeS.userClickOnTheReportTab();
         homeS.userClickOnTimeTrackerOption();
@@ -78,19 +100,24 @@ public class WebUserTestingClass extends BasePage {
         trackerStep.verifyUserCanSeeTheComponentsInTheTimeTrackerScreen();
         trackerStep.userCanSeeTheTodaysDateOnTrackerScreen();
         logger.info("TC_17 " + "Verify after clicking on the Time Tracker from ropdown of report, Time tracker page should get open. !");
-        trackerStep.userSelectTheParticularDayAndMonthUsingCalenderOnClaimStatus();
-        trackerStep.verifyUserSActiveTimeIdleTimeAndTotalTimeDataOnTimeTrackerPageShouldBeCorrect();
+        trackerStep.userSelectTheParticularDayAndMonthUsingCalenderOnClaimStatus(day,month);
+        trackerStep.verifyUserSActiveTimeIdleTimeAndTotalTimeDataOnTimeTrackerPageShouldBeCorrect(day,month);
         logger.info("TC_18 " + "Verify user can see the data in time for a particular day. !");
         logger.info("TC_20 " + "Verify user's Active time, Idle Time and Total Time Data on time tracker page should be correct !");
-        trackerStep.verifyUserIsAbleToSeeTheDataForADateRange();
-        trackerStep.verifyRangeOfDataShouldBeVerifyWithApiS();
+        trackerStep.verifyUserIsAbleToSeeTheDataForADateRange(day,month);
+        trackerStep.verifyRangeOfDataShouldBeVerifyWithApiS(todayDate,day,todayDate,month,email,password);
         logger.info("TC_19 " + "Verify user is able to see the data for a date range. !");
         logger.info("All the system time tracker functionality related test cases verified successfully  !");
     }
 
-    // assertion failing due to 24hr time monitor time changed
+    // Done Successfully
     @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 4)
     public void testReportSystemActivityFunctionality() {
+        int day = Integer.parseInt(System.getProperty("day"));
+        String month = System.getProperty("month");
+        String email = System.getProperty("email");
+        String password = System.getProperty("password");
+        int pastDay=todayDate-1;
         HomeSteps homeS = new HomeSteps();
         homeS.userClickOnTheReportTab();
         SystemActivitySteps system = new SystemActivitySteps();
@@ -99,15 +126,15 @@ public class WebUserTestingClass extends BasePage {
         system.userGetTheDateFromSystemActivityScreen();
         system.verifyTheUserCanSeeComponentInTheSystemActivityScreen();
         logger.info("TC_21 " + "Verify when clicking on System Activity report page from report dropdown, page should get open. !");
-        system.verifyUserShouldAbleToSeeCurrentDateAllUsedUrlAppWhenLoadingThePageFirstTime();
+        system.verifyUserShouldAbleToSeeCurrentDateAllUsedUrlAppWhenLoadingThePageFirstTime(todayDate,currentMonth,email,password);
         logger.info("TC_22 " + "Verify user should able to see current date all used url & App when loading the page first time !");
-        system.verifyThatFirstActivityOfTheUserShouldHaveStartTimeAsDayStartTime();
+        system.verifyThatFirstActivityOfTheUserShouldHaveStartTimeAsDayStartTime(todayDate,currentMonth,email,password);
         logger.info("TC_23 " + "Verify that first activity of the user should have start time as day start time !");
         //system.verifyThatTimeSpentOnAnyActivityShouldBeTheDifferenceBetweenNextActivityStartTimeAndThatParticularActivityStartTime();
         // TC_24 no need to automate
         logger.info("TC_24 " + "Verify that Time spent on any activity should be the difference between next Activity start time and that particular Activity start time !");
         system.verifyUserCanAbleToChangeTheDateToSeeActivitiesOfThatDay();
-        system.verifyActivitiesOfThePastDayWithApiS();
+        system.verifyActivitiesOfThePastDayWithApiS(pastDay,month,email,password);
         logger.info("TC_25 " + "Verify user can able to change the date to see activities of that day !");
         system.verifyUserAbleToChangeTheNextAndPreviousButtonSuccessfully();
         logger.info("TC_26 " + "Verify user able to change the next and previous button successfully !");
@@ -121,6 +148,10 @@ public class WebUserTestingClass extends BasePage {
     // Done Successfully
     @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 5)
     public void testActivitySummeryFunctionality() {
+        int day = Integer.parseInt(System.getProperty("day"));
+        String month = System.getProperty("month");
+        String email = System.getProperty("email");
+        String password = System.getProperty("password");
         HomeSteps homeS = new HomeSteps();
         homeS.userClickOnTheReportTab();
         ActivitySummerySteps summery=new ActivitySummerySteps();
@@ -140,6 +171,10 @@ public class WebUserTestingClass extends BasePage {
     //Done successfully
     @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 6)
     public void testReportProductivityVsIdleComponent() {
+        int day = Integer.parseInt(System.getProperty("day"));
+        String month = System.getProperty("month");
+        String email = System.getProperty("email");
+        String password = System.getProperty("password");
         HomeSteps homeS = new HomeSteps();
         homeS.userClickOnTheReportTab();
         ProductiveVsIdleSteps productive = new ProductiveVsIdleSteps();
@@ -147,15 +182,15 @@ public class WebUserTestingClass extends BasePage {
         homeS.userClickOnTheReportTab();
         productive.verifyTheUserCanSeeComponentInTheProductivityVsIdleScreen();
         logger.info("TC_28 " + "Verify user should able to open Productivity vs Idle Page !");
-        productive.verifyTheUserProductivityVsIdleDataMappingWithApiS();
+        productive.verifyTheUserProductivityVsIdleDataMappingWithApiS(currentMonth,email,password);
         logger.info("TC_29 " + "Verify user can see the Productive vs Idle time of a particular date !");
-        productive.verifyIdleAwayAndTotalTimeOnThisPageIsSameAsIdleTimeOnTimeTrackerPage();
+        productive.verifyIdleAwayAndTotalTimeOnThisPageIsSameAsIdleTimeOnTimeTrackerPage(todayDate,currentMonth,email,password);
         logger.info("TC_30 " + "Verify Idle Time on this page is same as Idle Time on Time tracker Page !");
         logger.info("TC_31 " + "Verify Away Time on this page is same as away Time on Time tracker Page !");
         logger.info("TC_32 " + "Verify Total Time on this page is same as Total Time on Time tracker Page !");
         logger.info("TC_33 " + "Verify sum of productive time and unproductive time should be same as Active time !");
         productive.userSelectTheParticularDayAndMonthUsingCalenderOnClaimStatus();
-        productive.verifyTheUserCanCheckTheProductivityVsIdleReportForPastDate();
+        productive.verifyTheUserCanCheckTheProductivityVsIdleReportForPastDate(day,month,email,password);
         logger.info("TC_34 " + "Verify user should able to click on Productive, unproductive and Idle time graph ");
         /*****************Element are not clickable ************************/
         /*****************Hence developed method is not working ***********/
@@ -173,6 +208,10 @@ public class WebUserTestingClass extends BasePage {
 
     @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 7)
     public void testReportWebAppsComponents() {
+        int day = Integer.parseInt(System.getProperty("day"));
+        String month = System.getProperty("month");
+        String email = System.getProperty("email");
+        String password = System.getProperty("password");
         HomeSteps homeS = new HomeSteps();
         homeS.userClickOnTheReportTab();
         WebAndAppsSteps webapps = new WebAndAppsSteps();
@@ -181,7 +220,6 @@ public class WebUserTestingClass extends BasePage {
         webapps.verifyAllTheComponentsOnTheWebAndAppsScreen();
         logger.info("TC_35 " + "Verify user is able to navigate to Web & App page !");
         // pending to automate
-
         logger.info("TC_36 " + "Verify user able to see current date Website and App at first time page load !");
         webapps.verifyWebsitesDataFromApiSIntegration();
         webapps.userClickOnApplicationTab();
@@ -196,18 +234,20 @@ public class WebUserTestingClass extends BasePage {
     //Done
     @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 8)
     public void testReportAttendanceComponents() {
+        int day = Integer.parseInt(System.getProperty("day"));
+        String month = System.getProperty("month");
+        String email = System.getProperty("email");
+        String password = System.getProperty("password");
         HomeSteps homeS = new HomeSteps();
         homeS.userClickOnTheReportTab();
         AttendanceSteps attendance = new AttendanceSteps();
         attendance.userClickOnTheAttendanceTab();
         homeS.userClickOnTheReportTab();
-        int day = Integer.parseInt(System.getProperty("day"));
-        String month = System.getProperty("month");
         attendance.verifyAllTheComponentsOnTheAttendanceScreen();
         logger.info("TC_40 " + "Verify after clicking on the \"Attendance\" form navigational panel \"Attendance\" report page should get open. !");
         logger.info("TC_41 " + "Verify user can see the attendance details for a Particular date from Attendance !");
-        attendance.verifyTheUserDetailsOnAttendanceScreenFromApiS(day, month);
-        attendance.verifyCurrentDateInOutTotalTimeFromApiS();
+        attendance.verifyTheUserDetailsOnAttendanceScreenFromApiS(day, month,email,password);
+        attendance.verifyCurrentDateInOutTotalTimeFromApiS(day, month,email,password);
         logger.info("TC_42 " + "Verify user should able to select date in any date range !");
         logger.info("All report attendance related functionality verified successfully !");
         // pending previous date
@@ -215,6 +255,10 @@ public class WebUserTestingClass extends BasePage {
 
     @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 9)
     public void testReportTimelinesComponents() {
+        int day = Integer.parseInt(System.getProperty("day"));
+        String month = System.getProperty("month");
+        String email = System.getProperty("email");
+        String password = System.getProperty("password");
         HomeSteps homeS = new HomeSteps();
         homeS.userClickOnTheReportTab();
         TimelineSteps time = new TimelineSteps();
@@ -234,6 +278,10 @@ public class WebUserTestingClass extends BasePage {
     // Done
     @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 10)
     public void testScreenshotModuleFunctionality() {
+        int day = Integer.parseInt(System.getProperty("day"));
+        String month = System.getProperty("month");
+        String email = System.getProperty("email");
+        String password = System.getProperty("password");
         ScreenshotSteps screenshot = new ScreenshotSteps();
         screenshot.userClickOnScreenshotTab();
         screenshot.verifyAllTheComponentsOnTheScreenshotScreen();
@@ -242,7 +290,7 @@ public class WebUserTestingClass extends BasePage {
         screenshot.userSelectTheParticularDayAndMonthUsingCalender();
         logger.info("TC_54 " + "Verify user should able to change the date. !");
         // assertion failing
-        //screenshot.verifyTheScreenShotsAndScreenshotTimeWithApiS();
+        screenshot.verifyTheScreenShotsAndScreenshotTimeWithApiS(day,day,month,email,password);
         logger.info("TC_50 " + "Verify user can see the next and Previous screenshots on the page. !");
         screenshot.verifyUserAbleToMaximizeTheScreenshotImage();
         logger.info("TC_51 " + "Verify user able to maximize the screenshot image. !");
@@ -258,17 +306,19 @@ public class WebUserTestingClass extends BasePage {
     // Done
     @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 11)
     public void testTimeClaimFunctionality() {
+        int day = Integer.parseInt(System.getProperty("day"));
+        String month = System.getProperty("month");
+        String email = System.getProperty("email");
+        String password = System.getProperty("password");
         TimeClaimSteps claim = new TimeClaimSteps();
         claim.userClickOnTimeClaimTab();
         claim.userClickOnClaimOptionSubTab();
         claim.userClickOnTimeClaimTab();
         claim.verifyAllTheComponentsOnTheTimeClaimScreen();
         logger.info("TC_55 " + "Verify user should be able to open the claim page. !");
-        int day = Integer.parseInt(System.getProperty("day"));
-        String month = System.getProperty("month");
         claim.userSelectTheParticularDayAndMonthUsingCalenderOnTheTimeClaimScreen(day, month);
         // expected [3:22:50 PM] but found [03:22:50 PM] issue found but handled temporary
-        claim.verifyTheTimeClaimActivityTimesWithApiS(day, month);
+        claim.verifyTheTimeClaimActivityTimesWithApiS(day, month,email,password);
         logger.info("TC_56 " + "verify time claim page should have all the sessions of the current date !");
         logger.info("TC_57 " + "verify user should able to click on action button and claim time. !");
         // records api need to automate from the time claim screen
@@ -279,7 +329,11 @@ public class WebUserTestingClass extends BasePage {
     //Done but assertion failed due to time stamp
     // expected [07:32] but found [19:32], expected [07:50] but found [19:50]
     @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 12)
-    public void testTimeClaimStatusFunctionality() {
+    public void testTimeClaimStatusFunctionality() throws java.text.ParseException {
+        int day = Integer.parseInt(System.getProperty("day"));
+        String month = System.getProperty("month");
+        String email = System.getProperty("email");
+        String password = System.getProperty("password");
         TimeClaimSteps claim = new TimeClaimSteps();
         claim.userClickOnTimeClaimTab();
         claim.userClickOnStatusOptionSubTab();
@@ -287,10 +341,8 @@ public class WebUserTestingClass extends BasePage {
         claim.verifyAllTheComponentsOnTheTimeClaimStatusScreen();
         logger.info("TC_58 " + "verify user should able to navigate to time claim status page. !");
         // pending to verify for current date
-        int day = Integer.parseInt(System.getProperty("day"));
-        String month = System.getProperty("month");
         claim.userSelectTheParticularDayAndMonthUsingCalenderOnClaimStatus(day, month);
-        claim.verifyTheTimeClaimsStatusRecordAndStatusWithApiS();
+        claim.verifyTheTimeClaimsStatusRecordAndStatusWithApiS(day,month,email,password);
         logger.info("TC_59 " + "Verify all the time claim status should be visible. !");
         logger.info("TC_60 " + "Verify user should able to change the date !");
         logger.info("All the time claim status related test cases verified successfully !");
@@ -299,11 +351,15 @@ public class WebUserTestingClass extends BasePage {
     // Done Successfully !
     @Test(dependsOnMethods = "testLoginFunctionalityWithValidUser", priority = 13)
     public void testHolidayFunctionality() {
+        int day = Integer.parseInt(System.getProperty("day"));
+        String month = System.getProperty("month");
+        String email = System.getProperty("email");
+        String password = System.getProperty("password");
         HolidaySteps holiday = new HolidaySteps();
         holiday.userClickOnTimeHolidayTab();
         holiday.verifyAllUIComponentsOnTheHolidayScreen();
         logger.info("TC_61 " + "Verify after clicking on the \"Holiday\" form navigational panel \"Holiday\" report page should get open. !");
-        holiday.verifyTheHolidayDataWithHolidaysApiS();
+        holiday.verifyTheHolidayDataWithHolidaysApiS(todayDate,currentMonth,email,password);
         logger.info("TC_62 " + "Verify user should be able to see the holidays. !");
     }
 

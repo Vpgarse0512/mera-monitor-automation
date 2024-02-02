@@ -4,6 +4,8 @@ import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.apache.commons.io.FileUtils;
+import org.helpers.jsonReader.JsonHelper;
+import org.json.simple.parser.ParseException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -24,6 +26,7 @@ import java.util.GregorianCalendar;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
+
 @Listeners
 public class BasePage extends BaseTest {
 
@@ -35,19 +38,21 @@ public class BasePage extends BaseTest {
      * used to perform browser interactions with.
      */
     private static ThreadLocal<WebDriver> webDriver = new ThreadLocal<>();
+
     @BeforeSuite
-    public void dataReady(){
-        String day = PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "day");
-        String month = PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "month");
-        String accessToken = PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "accessToken");
-        String url = PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "url");
-        String browser = PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "browser");
-        System.out.println("Day added in global property file : "+day+" and Month :"+month);
-        System.setProperty("day",day);
-        System.setProperty("month",month);
-        System.setProperty("token",accessToken);
-        System.setProperty("url",url);
-        System.setProperty("browser",browser);
+    public void dataReady() throws IOException, ParseException {
+        System.setProperty("day", PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "day"));
+        System.setProperty("month", PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "month"));
+        System.setProperty("token", PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "accessToken"));
+        System.setProperty("url", PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "url"));
+        System.setProperty("browser", PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "browser"));
+        System.setProperty("email", JsonHelper.getValue("email1").toString());
+        System.setProperty("password", JsonHelper.getValue("password1").toString());
+        System.setProperty("month",JsonHelper.getValue("month").toString());
+        System.out.println(JsonHelper.getValue("email1"));
+        System.out.println(JsonHelper.getValue("password1"));
+        System.setProperty("invalidEmail", PropertiesUtils.getProperty(PropertyFileEnum.CREAD, "invalidEmail"));
+        System.setProperty("invalidPassword",PropertiesUtils.getProperty(PropertyFileEnum.CREAD, "invalidPassword"));
         log.info("all the data ready to used in system property !");
     }
 
@@ -62,7 +67,7 @@ public class BasePage extends BaseTest {
         if (browserName.equalsIgnoreCase("Firefox")) {
             WebDriverManager.firefoxdriver().setup();
             webDriver.set(new FirefoxDriver());
-            driver.navigate().to(PropertiesUtils.getProperty(PropertyFileEnum.GLOB,"url"));
+            driver.navigate().to(PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "url"));
         }
         // if browser name passed as chrome
         else if (browserName.equalsIgnoreCase("chrome")) {
@@ -78,7 +83,7 @@ public class BasePage extends BaseTest {
     }
 
     @AfterClass
-    public void teardown()  {
+    public void teardown() {
         // Here will compare if test is failing then only it will enter into if condition
         log.info("Shutting down driver" + "\n" + "----------------------------------------------");
         System.out.println("\n");

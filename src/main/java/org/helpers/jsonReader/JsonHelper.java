@@ -14,10 +14,17 @@ public class JsonHelper {
 
     private static final Logger LOGGER = LogManager.getLogger(JsonHelper.class);
 
-    public static Object getValue(String key) throws IOException, ParseException {
+    public static Object getValue(String key) {
 
         JSONParser parser = new JSONParser();
-        Object obj = parser.parse(new FileReader("src/test/resources/userCredentials.json"));
+        Object obj = null;
+        try {
+            obj = parser.parse(new FileReader("src/test/resources/userCredentials.json"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
         JSONObject path = (JSONObject) obj;
         LOGGER.info("User data successfully printed !");
         return path.get(key);

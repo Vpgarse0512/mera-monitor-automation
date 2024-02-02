@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.helpers.enums.HttpVerbs;
 import org.helpers.enums.Routes;
+import org.helpers.jsonReader.JsonHelper;
 import org.helpers.restUtil.RestUtils;
 import org.json.simple.parser.ParseException;
 import org.propertyHelper.PropertiesUtils;
@@ -62,13 +63,13 @@ public class ScreenshotEndPoint extends RestUtils {
         return jsonPath.getString("message").trim();
     }
 
-    public JsonPath getScreenShotDetails(String date) {
+    public JsonPath getScreenShotDetails(String date,int day,String month,String email,String password) {
         LOGGER.info("Build request specification for Download time tracker report API.");
         String accessToken = "Bearer " + PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "accessToken");
         LoginEndPoints login = new LoginEndPoints();
         LinkedHashMap<String, Object> data = null;
         try {
-            data = login.getTheDetailsFromLoginAPI();
+            data = login.getTheDetailsFromLoginAPI(day,month,email,password);
             LinkedHashMap<String, Object> object = new LinkedHashMap<>();
             object.put("OrganizationId", data.get("organizationId"));
             object.put("UserId", data.get("userId"));
@@ -87,9 +88,10 @@ public class ScreenshotEndPoint extends RestUtils {
         return jsonPath;
     }
 
-    public LinkedHashMap<String, ArrayList<String>> getScreenShotStamp(String date) {
-        int size = getScreenShotDetails(date).getList("blobResponse").size();
-        JsonPath data = getScreenShotDetails(date);
+    public LinkedHashMap<String, ArrayList<String>> getScreenShotStamp(String date,int day,String month,String email,String password) {
+        JsonPath data = getScreenShotDetails(date, day, month, email, password);
+        int size = data.getList("blobResponse").size();
+        System.out.println(size);
         ArrayList<String> list = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             list.add(data.get("blobResponse[" + i + "].description"));
@@ -101,9 +103,13 @@ public class ScreenshotEndPoint extends RestUtils {
         return map;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, ParseException {
+        String email = JsonHelper.getValue("email1").toString();
+        String password = JsonHelper.getValue("password1").toString();
+        String month = JsonHelper.getValue("month").toString();
         ScreenshotEndPoint screenshot = new ScreenshotEndPoint();
         //System.out.println(screenshot.getScreenShotDetails(TimeDateClass.getTodaysDate()).getString("blobResponse[0].description"));
-        System.out.println(screenshot.getScreenShotStamp(TimeDateClass.getTodaysDate()));
+        System.out.println(screenshot.getScreenShotDetails(TimeDateClass.getCustomDate(16,"January"),2,month,email,password).getString(""));
+       // System.out.println(screenshot.getScreenShotStamp(TimeDateClass.getTodaysDate(),16,month,email,password));
     }
 }

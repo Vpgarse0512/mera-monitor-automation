@@ -77,6 +77,14 @@ public class MM_HomeScreen extends BaseTest {
 
     @FindBy(xpath = "(//span[@class='text-muted fw-bold fs-7'])[1]")
     public WebElement weaklyDate;
+    @FindBy(xpath = "//h2[@class='noRecordFound']")
+    public WebElement noRecordFound;
+    @FindBy(xpath = "(//div[@class='d-flex justify-content-start flex-column']//span[@class='text-muted fw-bold text-muted d-block fs-7'])[1]")
+    public WebElement todayDate;
+    public int getTodayDate()
+    {
+        return Integer.parseInt(todayDate.getText().trim().split(" ")[2]);
+    }
     public String getWeaklyDateOnProductiveVsIdleSection()
     {
         return getText(weaklyDate);

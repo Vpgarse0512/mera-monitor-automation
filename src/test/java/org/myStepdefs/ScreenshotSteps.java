@@ -4,16 +4,21 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import org.base.BasePage;
 import org.base.BaseTest;
+import org.helpers.jsonReader.JsonHelper;
 import org.pages.MM_HomeScreen;
 import org.pages.MM_ScreenshotScreen;
 import org.testng.asserts.SoftAssert;
 import org.testng.log4testng.Logger;
+import org.timeUtil.TimeDateClass;
 
 import java.util.function.Supplier;
 
 public class ScreenshotSteps {
     private static java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ScreenshotSteps.class.getName());
-
+    String email = JsonHelper.getValue("email1").toString();
+    String password = JsonHelper.getValue("password1").toString();
+    String month = JsonHelper.getValue("month").toString();
+    int day = Integer.parseInt(JsonHelper.getValue("day").toString());
     @And("User click on Screenshot tab.")
     public void userClickOnScreenshotTab() {
         MM_HomeScreen home = new MM_HomeScreen();
@@ -42,13 +47,13 @@ public class ScreenshotSteps {
     }
 
     @Then("Verify the screen shots and screenshot time with api's.")
-    public void verifyTheScreenShotsAndScreenshotTimeWithApiS() {
+    public void verifyTheScreenShotsAndScreenshotTimeWithApiS(int date,int day,String month,String email,String password) {
         MM_ScreenshotScreen screenshot = new MM_ScreenshotScreen();
 
         if (screenshot.foundNoScreenShotText() == null)
             logger.info("screen shot not captured !");
         else
-            screenshot.verifyScreenshotsOnScreenshotScreen();
+            screenshot.verifyScreenshotsOnScreenshotScreen(TimeDateClass.getCustomDate(date,month),day,month,email,password);
     }
 
     @And("User select the particular day and month using calender.")

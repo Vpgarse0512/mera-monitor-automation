@@ -2,6 +2,7 @@ package org.myStepdefs;
 
 import io.restassured.path.json.JsonPath;
 import org.helpers.endPoints.userEndPointAPIs.TimeTrackerEndPoints;
+import org.helpers.jsonReader.JsonHelper;
 import org.json.simple.parser.ParseException;
 import org.pages.MM_HomeScreen;
 import org.pages.MM_TimeTrackerScreen;
@@ -15,7 +16,10 @@ import java.io.IOException;
 
 public class ReportTabSteps {
     private static java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ReportTabSteps.class.getName());
-
+    String email = JsonHelper.getValue("email1").toString();
+    String password = JsonHelper.getValue("password1").toString();
+    String month = JsonHelper.getValue("month").toString();
+    int day = Integer.parseInt(JsonHelper.getValue("day").toString());
     @Test
     public void validate_user_time_tracker_details() throws InterruptedException, IOException, ParseException {
         LoginSteps loginTest = new LoginSteps();
@@ -29,7 +33,7 @@ public class ReportTabSteps {
         MM_TimeTrackerScreen timeTracker = new MM_TimeTrackerScreen();
         Assert.assertEquals(timeTracker.getTimeTrackerTittle(), "Time Tracker");
         TimeTrackerEndPoints tracker = new TimeTrackerEndPoints();
-        JsonPath trackerDetails = tracker.getTimeTrackerDetails(3);
+        JsonPath trackerDetails = tracker.getTimeTrackerDetails(3,"January","akumar@aapnainfotech.com","Test@123");
         Assert.assertEquals(timeTracker.getUserName(), trackerDetails.getString("[1].employeeName"));
         Assert.assertEquals(timeTracker.getDate(), trackerDetails.getString("[1].reportDate").replace("-", "/"));
         Assert.assertEquals(timeTracker.getDepartment(), trackerDetails.getString("[1].department"));

@@ -4,6 +4,7 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import org.helpers.endPoints.userEndPointAPIs.AttendaceByUserEndPoint;
 import org.helpers.endPoints.userEndPointAPIs.AttendanceEndpoints;
+import org.helpers.jsonReader.JsonHelper;
 import org.pages.MM_AttendanceScreen;
 import org.testng.asserts.SoftAssert;
 import org.testng.log4testng.Logger;
@@ -14,7 +15,11 @@ import java.util.Map;
 public class AttendanceSteps {
 
     private static java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AttendanceSteps.class.getName());
-
+    String email = JsonHelper.getValue("email1").toString();
+    String password = JsonHelper.getValue("password1").toString();
+    String month = JsonHelper.getValue("month").toString();
+    int day = Integer.parseInt(JsonHelper.getValue("day").toString());
+    int todayDate;
     @And("User click on the attendance tab.")
     public void userClickOnTheAttendanceTab() {
         MM_AttendanceScreen attendance = new MM_AttendanceScreen();
@@ -37,11 +42,11 @@ public class AttendanceSteps {
     }
 
     @Then("Verify the user details on attendance screen from api's.")
-    public void verifyTheUserDetailsOnAttendanceScreenFromApiS(int day,String month) {
+    public void verifyTheUserDetailsOnAttendanceScreenFromApiS(int day,String month,String email,String password) {
         MM_AttendanceScreen attendance = new MM_AttendanceScreen();
         attendance.selectOldDate(day,month);
         AttendanceEndpoints api = new AttendanceEndpoints();
-        HashMap<String, Object> response = api.getUserAttendanceDetailsInMap(day,month);
+        HashMap<String, Object> response = api.getUserAttendanceDetailsInMap(day,month,email,password);
         SoftAssert soft = new SoftAssert();
         soft.assertEquals(attendance.getName(), response.get("name"));
         soft.assertEquals(attendance.getLoggedHours(),response.get("loggedHours"));
@@ -53,14 +58,12 @@ public class AttendanceSteps {
     }
 
     @Then("Verify current date in out total time from api's.")
-    public void verifyCurrentDateInOutTotalTimeFromApiS() {
-        int day = Integer.parseInt(System.getProperty("day"));
-        String month = System.getProperty("month");
+    public void verifyCurrentDateInOutTotalTimeFromApiS(int day,String month,String email,String password) {
         MM_AttendanceScreen attendance = new MM_AttendanceScreen();
         attendance.clickOnMoreLink();
         SoftAssert soft=new SoftAssert();
         AttendaceByUserEndPoint api=new AttendaceByUserEndPoint();
-        Map<String, Object> time = api.getInOutTotalTime(day);
+        Map<String, Object> time = api.getInOutTotalTime(day,month,email,password);
        // soft.assertEquals(attendance.getPresenty(),time.get("Presenty"));
         soft.assertEquals(attendance.getInTime(),time.get("In"));
         soft.assertEquals(attendance.getOutTime(),time.get("Out"));

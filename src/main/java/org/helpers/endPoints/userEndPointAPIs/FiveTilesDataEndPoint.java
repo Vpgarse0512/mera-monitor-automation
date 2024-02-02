@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.helpers.enums.HttpVerbs;
 import org.helpers.enums.Routes;
+import org.helpers.jsonReader.JsonHelper;
 import org.helpers.restUtil.RestUtils;
 import org.json.simple.parser.ParseException;
 import org.propertyHelper.PropertiesUtils;
@@ -59,13 +60,13 @@ public class FiveTilesDataEndPoint extends RestUtils {
         return jsonPath.getString("message").trim();
     }
 
-    public JsonPath getTotalProductiveHoursByUserDetails() {
+    public JsonPath getTotalProductiveHoursByUserDetails(int day,String month,Object email,Object password) {
         LOGGER.info("Build request specification for TotalTimeInSeconds API.");
         String accessToken = "Bearer " + PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "accessToken");
         LoginEndPoints login = new LoginEndPoints();
         LinkedHashMap<String, Object> data = null;
         try {
-            data = login.getTheDetailsFromLoginAPI();
+            data = login.getTheDetailsFromLoginAPI(day,month,email,password);
             LinkedHashMap<String, Object> object = new LinkedHashMap<>();
             object.put("userId", data.get("userId"));
             object.put("organizationId", data.get("organizationId"));
@@ -83,10 +84,10 @@ public class FiveTilesDataEndPoint extends RestUtils {
 
         return jsonPath;
     }
-    public HashMap<String, Object> getFiveTilesDataMap()
+    public HashMap<String, Object> getFiveTilesDataMap(int day,String month,Object email,Object password)
     {
         HashMap<String,Object> map=new HashMap<>();
-        JsonPath tiles = getTotalProductiveHoursByUserDetails();
+        JsonPath tiles = getTotalProductiveHoursByUserDetails(day,month,email,password);
         map.put("name",tiles.getString("userName"));
         map.put("totalHours",TimeDateClass.convertSecondsToHHMMSS(tiles.getString("totalTime")));
         map.put("activeTime",TimeDateClass.convertSecondsToHHMMSS(tiles.getString("totalActiveTime")));
@@ -104,9 +105,12 @@ public class FiveTilesDataEndPoint extends RestUtils {
         return map;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, ParseException {
+        String email = JsonHelper.getValue("email1").toString();
+        String password = JsonHelper.getValue("password1").toString();
+        String month = JsonHelper.getValue("month").toString();
         FiveTilesDataEndPoint five=new FiveTilesDataEndPoint();
-        System.out.println(five.getTotalProductiveHoursByUserDetails().getString(""));
-        System.out.println(five.getFiveTilesDataMap());
+        System.out.println(five.getTotalProductiveHoursByUserDetails(16,month,email,password).getString(""));
+        System.out.println(five.getFiveTilesDataMap(16,month,email,password));
     }
 }

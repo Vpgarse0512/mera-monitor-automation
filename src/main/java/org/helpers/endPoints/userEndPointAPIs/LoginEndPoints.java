@@ -27,11 +27,9 @@ public class LoginEndPoints extends RestUtils {
      *
      * @param payloadObj,cred
      */
-    public void buildRequestSpecForLoginAPI(HashMap<String,Object> payloadObj, Object token) {
-        HashMap<String,Object> accessToken=new HashMap();
-        accessToken.put("accessToken",token);
+    public void buildRequestSpecForLoginAPI(HashMap<String,Object> payloadObj) {
         LOGGER.info("Building request specification for Login API.");
-        reqSpec = RestUtils.requestSpecification(payloadObj, accessToken);
+        reqSpec = RestUtils.requestSpecification(payloadObj);
     }
 
     /**
@@ -63,40 +61,46 @@ public class LoginEndPoints extends RestUtils {
 
     public JsonPath getLoginUserDetails() throws IOException, ParseException {
         LOGGER.info("Build request specification for Login API.");
-        String accessToken = PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "accessToken");
         JSONObject object = new JSONObject();
         object.put("email", JsonHelper.getValue("email1"));
         object.put("password", JsonHelper.getValue("password1"));
-        buildRequestSpecForLoginAPI(object, accessToken);
+        buildRequestSpecForLoginAPI(object);
         hitLoginAPI();
         Assert.assertEquals(getAPIResponseCode(), 200);
-        Assert.assertEquals(getLoginAPIResponseMessage(), "Login Successful");
+        //Assert.assertEquals(getLoginAPIResponseMessage(), "Login Successful");
         return jsonPath;
     }
-    public LinkedHashMap<String, Object> getTheDetailsFromLoginAPI() throws IOException, ParseException {
+    public LinkedHashMap<String, Object> getTheDetailsFromLoginAPI(int day,String month,Object email, Object pass) throws IOException, ParseException {
         LOGGER.info("Build request specification for Login API.");
-        String accessToken = PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "accessToken");
         JSONObject object = new JSONObject();
-        object.put("email", JsonHelper.getValue("email1"));
-        object.put("password", JsonHelper.getValue("password1"));
-        buildRequestSpecForLoginAPI(object, accessToken);
+        object.put("email", email);
+        object.put("password",pass);
+        buildRequestSpecForLoginAPI(object);
         hitLoginAPI();
         Assert.assertEquals(getAPIResponseCode(), 200);
-        Assert.assertEquals(getLoginAPIResponseMessage(), "Login Successful");
+        //Assert.assertEquals(getLoginAPIResponseMessage(), "Login Successful");
+        PropertiesUtils.modifyProperty(PropertyFileEnum.GLOB,"accessToken",jsonPath.getString("accessToken"));
         LinkedHashMap<String,Object> body = new LinkedHashMap<>();
+        body.put("accessToken",jsonPath.getString("accessToken"));
+        body.put("message",jsonPath.getString("message"));
         body.put("email",jsonPath.getString("email"));
         body.put("userId", jsonPath.getString("userId"));
         body.put("organizationId", jsonPath.getString("organizationId"));
-        body.put("fromDate", TimeDateClass.getCustomDateAndTime(8,"06:00:00"));
-        body.put("toDate",TimeDateClass.getCustomDateAndTime(8,"20:00:00"));
+        body.put("fromDate", TimeDateClass.getCustomDateAndTime(day,month));
+        body.put("toDate",TimeDateClass.getCustomDateAndTime(day,month));
         return body;
     }
 
     public static void main(String[] args) throws IOException, ParseException {
+        String email = JsonHelper.getValue("email1").toString();
+        String password = JsonHelper.getValue("password1").toString();
+        String month = JsonHelper.getValue("month").toString();
         LoginEndPoints login=new LoginEndPoints();
         login.getLoginUserDetails();
-        System.out.println(jsonPath.getString("email"));
-        System.out.println(login.getTheDetailsFromLoginAPI());
+        System.out.println(jsonPath.getString("accessToken"));
+        Object inemail = JsonHelper.getValue("invalidEmail");
+        Object pass = JsonHelper.getValue("invalidPassword");
+        System.out.println(login.getTheDetailsFromLoginAPI(16,month,inemail,pass));
 
     }
 

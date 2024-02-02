@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.helpers.enums.HttpVerbs;
 import org.helpers.enums.Routes;
+import org.helpers.jsonReader.JsonHelper;
 import org.helpers.restUtil.RestUtils;
 import org.json.simple.parser.ParseException;
 import org.propertyHelper.PropertiesUtils;
@@ -58,13 +59,13 @@ public class AttendanceEndpoints extends RestUtils {
         return jsonPath.getString("message").trim();
     }
 
-    public JsonPath getAttendanceDetails(int day, String month) {
+    public JsonPath getAttendanceDetails(int day, String month,String email,String password) {
         LOGGER.info("Build request specification for Attendance Report By Report Manager API.");
         String accessToken = "Bearer " + PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "accessToken");
         LoginEndPoints login = new LoginEndPoints();
         LinkedHashMap<String, Object> data = null;
         try {
-            data = login.getTheDetailsFromLoginAPI();
+            data = login.getTheDetailsFromLoginAPI(day,month,email,password);
             LinkedHashMap<String, Object> object = new LinkedHashMap<>();
             object.put("ManagerId", data.get("userId"));
             object.put("OrganizationId", data.get("organizationId"));
@@ -82,28 +83,32 @@ public class AttendanceEndpoints extends RestUtils {
 
         return jsonPath;
     }
-    public HashMap<String, Object> getUserAttendanceDetailsInMap(int day,String month)
+    public HashMap<String, Object> getUserAttendanceDetailsInMap(int day,String month,String email,String password)
     {
         HashMap<String,Object> map=new HashMap<>();
-        String name=getAttendanceDetails(day,month).getString("userName").replaceAll("\\[","").replaceAll("\\]","");
+        JsonPath respon = getAttendanceDetails(day, month, email, password);
+        String name=respon.getString("userName").replaceAll("\\[","").replaceAll("\\]","");
         map.put("name",name);
-        String expectedHour=getAttendanceDetails(day,month).getString("totalExpectedHours").replaceAll("\\[","").replaceAll("\\]","");
+        String expectedHour=respon.getString("totalExpectedHours").replaceAll("\\[","").replaceAll("\\]","");
         map.put("expectedHour",expectedHour);
-        String loggedHour=getAttendanceDetails(day,month).getString("activeTime").replaceAll("\\[","").replaceAll("\\]","");
+        String loggedHour=respon.getString("activeTime").replaceAll("\\[","").replaceAll("\\]","");
         double loggedHours = Double.parseDouble(loggedHour);
         map.put("loggedHours",TimeDateClass.convertSecondsToHHMMSSFormat(loggedHour));
-        String holiday=getAttendanceDetails(day,month).getString("holiday").replaceAll("\\[","").replaceAll("\\]","");
+        String holiday=respon.getString("holiday").replaceAll("\\[","").replaceAll("\\]","");
         map.put("holiday",holiday);
-        String leaves=getAttendanceDetails(day,month).getString("leaves").replaceAll("\\[","").replaceAll("\\]","");
+        String leaves=respon.getString("leaves").replaceAll("\\[","").replaceAll("\\]","");
         map.put("leaves",leaves);
         return map;
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, ParseException {
+        String email = JsonHelper.getValue("email1").toString();
+        String password = JsonHelper.getValue("password1").toString();
+        String month = JsonHelper.getValue("month").toString();
         AttendanceEndpoints attendance=new AttendanceEndpoints();
-        System.out.println(attendance.getAttendanceDetails(16,"January").getString(""));
-        System.out.println(attendance.getUserAttendanceDetailsInMap(16,"January"));
+        System.out.println(attendance.getAttendanceDetails(16,month,email,password).getString(""));
+        System.out.println(attendance.getUserAttendanceDetailsInMap(16,month,email,password));
     }
 
 }

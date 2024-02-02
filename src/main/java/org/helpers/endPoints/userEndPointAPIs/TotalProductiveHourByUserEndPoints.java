@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.helpers.enums.HttpVerbs;
 import org.helpers.enums.Routes;
+import org.helpers.jsonReader.JsonHelper;
 import org.helpers.restUtil.RestUtils;
 import org.json.simple.parser.ParseException;
 import org.propertyHelper.PropertiesUtils;
@@ -59,20 +60,26 @@ public class TotalProductiveHourByUserEndPoints extends RestUtils {
         return jsonPath.getString("message").trim();
     }
 
-    public JsonPath getTotalProductiveHoursByUserDetails() throws IOException, ParseException {
+    public JsonPath getTotalProductiveHoursByUserDetails(int day,String month,String email,String password) throws IOException, ParseException {
         LOGGER.info("Build request specification for Total Productive Hours By User API.");
-        String accessToken = PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "accessToken");
+        String accessToken = "Bearer "+PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "accessToken");
+        //System.out.println(accessToken);
         LoginEndPoints login = new LoginEndPoints();
-        LinkedHashMap<String, Object> body = login.getTheDetailsFromLoginAPI();
-        System.out.println(body);
+        LinkedHashMap<String, Object> response = login.getTheDetailsFromLoginAPI(day,month,email,password);
+        LinkedHashMap<String,Object> body=new LinkedHashMap<>();
+        body.put("userId",response.get("userId"));
+        body.put("organizationId",response.get("organizationId"));
+        body.put("fromDate",response.get("fromDate"));
+        body.put("toDate",response.get("toDate"));
+        //System.out.println(body);
         buildRequestSpecForTotalProductiveHoursByUserAPI(body, " "+accessToken);
         hitTotalProductiveHoursByUserAPI();
         Assert.assertEquals(getAPIResponseCode(), 200);
         //Assert.assertEquals(getLoginAPIResponseMessage(), "success");
         return jsonPath;
     }
-    public HashMap<String, String> getProductiveDetailsOfUser() throws IOException, ParseException {
-        JsonPath productiveTime = getTotalProductiveHoursByUserDetails();
+    public HashMap<String, String> getProductiveDetailsOfUser(int day,String month,String email,String password) throws IOException, ParseException {
+        JsonPath productiveTime = getTotalProductiveHoursByUserDetails(day,month,email,password);
         HashMap<String, String> details=new HashMap<>();
         details.put("userName",productiveTime.getString("userName"));
         details.put("totalProductiveTime",productiveTime.getString("totalProductiveTime"));
@@ -87,11 +94,14 @@ public class TotalProductiveHourByUserEndPoints extends RestUtils {
 
     public static void main(String[] args) throws IOException, ParseException {
         TotalProductiveHourByUserEndPoints productive = new TotalProductiveHourByUserEndPoints();
-        productive.getTotalProductiveHoursByUserDetails();
+        String email = JsonHelper.getValue("email1").toString();
+        String password = JsonHelper.getValue("password1").toString();
+        String month = JsonHelper.getValue("month").toString();
+        productive.getTotalProductiveHoursByUserDetails(16,month,email,password);
         System.out.println(jsonPath.get().toString());
         System.out.println(jsonPath.getString("[0].userName"));
         // to avoid 2 array entries use same custom date to get single entry and time should be morning to night
-        System.out.println(productive.getProductiveDetailsOfUser());
+        System.out.println(productive.getProductiveDetailsOfUser(16,month,email,password));
     }
 
 }

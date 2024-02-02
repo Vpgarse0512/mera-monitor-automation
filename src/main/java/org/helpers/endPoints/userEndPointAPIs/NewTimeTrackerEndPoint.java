@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.helpers.enums.HttpVerbs;
 import org.helpers.enums.Routes;
+import org.helpers.jsonReader.JsonHelper;
 import org.helpers.restUtil.RestUtils;
 import org.json.simple.parser.ParseException;
 import org.propertyHelper.PropertiesUtils;
@@ -61,16 +62,16 @@ public class NewTimeTrackerEndPoint extends RestUtils {
         return jsonPath.getString("message").trim();
     }
 
-    public JsonPath getTimeTrackerDetails(int day) {
+    public JsonPath getTimeTrackerDetails(int day,String month,String email,String password) {
         LOGGER.info("Build request specification for Download time tracker report API.");
         String accessToken = "Bearer " + PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "accessToken");
         LoginEndPoints login = new LoginEndPoints();
         LinkedHashMap<String, Object> data = null;
         try {
-            data = login.getTheDetailsFromLoginAPI();
+            data = login.getTheDetailsFromLoginAPI(day,month,email,password);
             LinkedHashMap<String, Object> object = new LinkedHashMap<>();
-            object.put("fromDate", TimeDateClass.getCustomDateAndTime(day, "00:00:00"));
-            object.put("toDate", TimeDateClass.getCustomDateAndTime(day, "00:00:00"));
+            object.put("fromDate", TimeDateClass.getCustomDateAndTime(day, month));
+            object.put("toDate", TimeDateClass.getCustomDateAndTime(day, month));
             object.put("organizationId", data.get("organizationId"));
             object.put("userId", data.get("userId"));
             buildRequestSpecForTimeTrackerAPI(object, accessToken);
@@ -86,16 +87,16 @@ public class NewTimeTrackerEndPoint extends RestUtils {
         return jsonPath;
     }
 
-    public JsonPath getTimeTrackerRangData(int fromDay, int toDay) {
+    public JsonPath getTimeTrackerRangData(int today, int pastDay,int day,String month,String email,String password) {
         LOGGER.info("Build request specification for Download time tracker report API.");
         String accessToken = "Bearer " + PropertiesUtils.getProperty(PropertyFileEnum.GLOB, "accessToken");
         LoginEndPoints login = new LoginEndPoints();
         LinkedHashMap<String, Object> data = null;
         try {
-            data = login.getTheDetailsFromLoginAPI();
+            data = login.getTheDetailsFromLoginAPI(day,month,email,password);
             LinkedHashMap<String, Object> object = new LinkedHashMap<>();
-            object.put("fromDate", TimeDateClass.getCustomDateAndTime(fromDay, "00:00:00"));
-            object.put("toDate", TimeDateClass.getCustomDateAndTime(toDay, "00:00:00"));
+            object.put("fromDate", TimeDateClass.getCustomDateAndTime(today, month));
+            object.put("toDate", TimeDateClass.getCustomDateAndTime(pastDay, month));
             object.put("organizationId", data.get("organizationId"));
             object.put("userId", data.get("userId"));
             buildRequestSpecForTimeTrackerAPI(object, accessToken);
@@ -111,12 +112,14 @@ public class NewTimeTrackerEndPoint extends RestUtils {
         return jsonPath;
     }
 
-    public LinkedHashMap<String, Object> getTimeTrackerMapData(int day) {
+    public LinkedHashMap<String, Object> getTimeTrackerMapData(int day,String month,String email,String password) {
 
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-        JsonPath tracker = getTimeTrackerDetails(day);
+        JsonPath tracker = getTimeTrackerDetails(day,month,email,password);
+        System.out.println(tracker.getString(""));
         map.put("name", tracker.getString("userName").replaceAll("\\[", "").replaceAll("\\]", ""));
         String totalTime = tracker.getString("totalTime").replaceAll("\\[", "").replaceAll("\\]", "");
+        System.out.println(totalTime);
         map.put("totalTime", TimeDateClass.convertSecondsToHHMMSSFormat(totalTime));
         String activeTime = tracker.getString("totalActiveTime").replaceAll("\\[", "").replaceAll("\\]", "");
         map.put("activeTime", TimeDateClass.convertSecondsToHHMMSSFormat(activeTime));
@@ -133,25 +136,24 @@ public class NewTimeTrackerEndPoint extends RestUtils {
         return map;
     }
 
-    public Map<String, List<String>> range(int size, String[] strList, int toDay, String date) {
+    public Map<String, List<String>> range(int size, String[] strList, int toDay, String date,int day,String month,String email,String password) {
         Map<String, List<String>> allRowsData = new HashMap<>();
-
+        JsonPath data = getTimeTrackerRangData(toDay, Integer.parseInt(date), day, month, email, password);
         for (String key : strList) {
             List<String> cellData = new java.util.ArrayList<>();
             for (int i = 0; i <= size - 1; i++) {
                 //soft.assertEquals(time.);
-                String data = getTimeTrackerRangData(toDay, Integer.parseInt(date)).getString("[" + i + "]." + key + "");
-                cellData.add(data);
+                cellData.add(data.getString("[" + i + "]." + key + ""));
             }
             allRowsData.put(key, cellData);
         }
         return allRowsData;
     }
 
-    public LinkedHashMap<String, Object> getRangeOfTimeTrackerData(int fromDay, int toDay) {
+    public LinkedHashMap<String, Object> getRangeOfTimeTrackerData(int fromDay, int toDay,int day,String month,String email,String password) {
 
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-        JsonPath tracker = getTimeTrackerRangData(fromDay, toDay);
+        JsonPath tracker = getTimeTrackerRangData(fromDay, toDay,day,month,email,password);
         map.put("name", tracker.getString("userName").replaceAll("\\[", "").replaceAll("\\]", ""));
         String totalTime = tracker.getString("totalTime").replaceAll("\\[", "").replaceAll("\\]", "");
         map.put("totalTime", TimeDateClass.convertSecondsToHHMMSSFormat(totalTime));
@@ -169,30 +171,18 @@ public class NewTimeTrackerEndPoint extends RestUtils {
         map.put("dept", tracker.getString("department").replaceAll("\\[", "").replaceAll("\\]", ""));
         return map;
     }
-           /* "userId": "645caeccc80c1518c6e1dac1",
-                    "userName": "Aman Kumar",
-                    "totalTime": "10650.545",
-                    "totalActiveTime": "10284.545",
-                    "totalIdleTime": "0",
-                    "awayTime": "366",
-                    "awayTimePercent": "3.44",
-                    "totalActivePercent": "96.56",
-                    "totalIdlePercent": "0.00",
-                    "message": "",
-                    "date": "1/3/2024 12:00:00 AM",
-                    "firstActivity": "1/3/2024 4:07:00 PM",
-                    "lastActivity": "1/3/2024 7:04:31 PM",
-                    "department": "Human Resource",
-                    "timeZone": "IST(UTC+05:30)"*/
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException, ParseException {
         NewTimeTrackerEndPoint tracker = new NewTimeTrackerEndPoint();
+        String email = JsonHelper.getValue("email1").toString();
+        String password = JsonHelper.getValue("password1").toString();
+        String month = JsonHelper.getValue("month").toString();
+        int day = Integer.parseInt(JsonHelper.getValue("day").toString());
         //System.out.println(tracker.getTimeTrackerDetails(17).getString(""));
-        //System.out.println(tracker.getTimeTrackerMapData(17));
+        System.out.println(tracker.getTimeTrackerMapData(02,"February","amkumar@aapnainfotech.com","Test@123"));
         //System.out.println(tracker.getTimeTrackerRangData(16, 18).getList("").size());
        // System.out.println(tracker.getTimeTrackerRangData(16, 18).getString(""));
         String [] keys= {"userName","date","totalTime","totalActiveTime","totalIdleTime","awayTime","firstActivity","lastActivity","department","timeZone"};
-
-        System.out.println(tracker.range(3,keys,16,"25"));;
+        //System.out.println(tracker.range(3,keys,16,"25",day,month,email,password));;
     }
 }

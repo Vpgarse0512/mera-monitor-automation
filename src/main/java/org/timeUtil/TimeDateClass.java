@@ -9,6 +9,7 @@ import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class TimeDateClass {
 
@@ -184,11 +185,24 @@ public class TimeDateClass {
         return formattedDate;
     }
 
-    public static String getCustomDateAndTime(int day, String HHMMSS) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_MONTH, day);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'" + HHMMSS);
-        return dateFormat.format(calendar.getTime());
+    public static String getCustomDateAndTime(int day, String month) {
+
+        // Parse the month string to Month enum using the English locale
+        Month monthEnum = Month.valueOf(month.toUpperCase(Locale.ENGLISH));
+
+        // Get the current year
+        int year = LocalDate.now().getYear();
+
+        // Construct a LocalDate object
+        LocalDate date = LocalDate.of(year, monthEnum, day);
+
+        // Define a DateTimeFormatter for the desired format
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'00:00:00");
+
+        // Format the LocalDate object using the formatter
+        String formattedDate = date.format(formatter);
+
+        return formattedDate;
     }
 
     public static String convertDateFormat(String inputDate, String inputFormat, String outputFormat) {
@@ -256,7 +270,37 @@ public class TimeDateClass {
         return month.getDisplayName(java.time.format.TextStyle.FULL, java.util.Locale.getDefault());
     }
 
+    public static int getDayOfMonth() {
+        // Get today's date
+        LocalDate today = LocalDate.now();
+        // Extract the day of the month
+        return today.getDayOfMonth();
+    }
 
+    // Method to get the month in string format
+    public static String getMonthAsString() {
+        // Get today's date
+        LocalDate today = LocalDate.now();
+        // Format the month as a string using the English locale
+        return today.getMonth().getDisplayName(
+                java.time.format.TextStyle.FULL,
+                Locale.ENGLISH
+        );
+    }
+    public static String convertHMMSSToHHMMSS(String inputTime) {
+        String[] parts = inputTime.split(":");
+
+        int hours = Integer.parseInt(parts[0]);
+        int minutes = Integer.parseInt(parts[1]);
+        int seconds = Integer.parseInt(parts[2]);
+
+        // Adjust hours if necessary
+        if (hours < 10) {
+            return String.format("0%d:%02d:%02d", hours, minutes, seconds);
+        } else {
+            return String.format("%d:%02d:%02d", hours, minutes, seconds);
+        }
+    }
     public static void main(String[] args) {
         //System.out.println(convertSecondsToHHMMSSFormat(3797));//3908 - 3797  01:05:08  01:03:17
         System.out.println(getToDate());
@@ -264,7 +308,7 @@ public class TimeDateClass {
         System.out.println(getCurrentDateWithHHMMSSTimeFormat());
         System.out.println(getCustomDateTime("10:10"));
         System.out.println(getCustomDate(02));
-        System.out.println(getCustomDateAndTime(9, "'T'06:00:00"));
+        System.out.println(getCustomDateAndTime(9, "January"));
         String newDate = convertDateFormat("1/3/2024 12:00:00 AM", "M/d/yyyy hh:mm:ss a", "dd/MM/yyyy");
         System.out.println(newDate);
         System.out.println(convertDateFormat("1/3/2024 4:07:00 PM", "M/d/yyyy h:mm:ss a", "hh:mm:ss a"));
@@ -278,6 +322,8 @@ public class TimeDateClass {
 
         System.out.println(convertDateFormat("2024-01-31T00:00:00","yyyy-MM-dd'T'HH:mm:ss","dd/MM/yyyy"));
         System.out.println(getMonthName(12));
+        System.out.println(getDayOfMonth());
+        System.out.println(getMonthAsString());
         /*00:05:18
         2023-12-13
         2023-12-12

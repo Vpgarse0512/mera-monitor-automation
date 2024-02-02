@@ -2,13 +2,17 @@ package org.myStepdefs;
 
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
+import org.helpers.jsonReader.JsonHelper;
 import org.pages.MM_WebAppsScreen;
 import org.testng.asserts.SoftAssert;
 import org.testng.log4testng.Logger;
 
 public class WebAndAppsSteps {
     private static java.util.logging.Logger logger = java.util.logging.Logger.getLogger(WebAndAppsSteps.class.getName());
-
+    String email = JsonHelper.getValue("email1").toString();
+    String password = JsonHelper.getValue("password1").toString();
+    String month = JsonHelper.getValue("month").toString();
+    int day = Integer.parseInt(JsonHelper.getValue("day").toString());
     @And("User click on the web and apps tab.")
     public void userClickOnTheWebAndAppsTab() {
         MM_WebAppsScreen webapps=new MM_WebAppsScreen();
